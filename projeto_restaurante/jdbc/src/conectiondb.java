@@ -1,0 +1,39 @@
+import java.sql.*;
+
+public class conectiondb {
+    //Informações de conexão
+    private static final String url = "jdbc:mysql://127.0.0.1:3308/pedidos";
+    private static final String user = "ricardo";
+    private static final String password = "62539036";
+    
+    private static Connection conexao = null;
+
+    //Método para estabelecer conexão com o Banco
+    public static Connection conectar(){
+        
+        try {
+            if(conexao == null){
+                conexao = DriverManager.getConnection(url, user, password);
+                System.out.println("Conexão estabelecida.");
+                return conexao;
+            }else{
+                return conexao;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //Método para fechar a conexão com o banco
+    public static void fecharConexao(Connection conexao){
+        if (conexao != null) {
+            try {
+                conexao.close();
+                System.out.println("Conexão encerrada.");
+            } catch (Exception e) {
+                System.out.println("Erro no encerramento da conexão." + e.getMessage());
+            }
+        }
+    }
+}
