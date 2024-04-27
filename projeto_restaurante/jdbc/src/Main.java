@@ -8,7 +8,6 @@ public class Main {
 
         // Exibe as Opções de Login
         login.LoginOpcoes();
-
         int opcao = leitor.nextInt();
         leitor.nextLine();                   // Limpa o Buffer
 
@@ -35,6 +34,7 @@ public class Main {
 
                 if (login.LoginAdmin(AdminUsuario, AdminSenha)) {   // Faz a Verificação de Usuário e senha pelo Método LoginAdmin
                     System.out.println("Login de Admin Feito!");        // Retornando True, o Login é confirmado e procede
+
                     admin.MenuAdmin();                              // Exibe o Menu de Admin
                     int adminopcao = leitor.nextInt();
 
@@ -50,6 +50,12 @@ public class Main {
                             leitor.nextLine();                              // Limpa o Buffer
 
                             admin.InserirPratos(nomePrato, valorPrato);     // Adiciona um novo prato com os parâmetros informados
+                            break;
+                        case 3:
+                            System.out.println("Nome do Prato a ser Deletado: ");
+                            nomePrato = leitor.nextLine();
+
+                            admin.DeletarPratos(nomePrato);
                             break;
                         default:
                             break;
