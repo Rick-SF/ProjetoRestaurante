@@ -8,6 +8,7 @@ public class Login {
     private Map<String, String> credenciaisGarcom;
     private Map<String, String> credenciaisAdmin;
 
+    // Método para exibir opções de Login
     public void LoginOpcoes(){
         System.out.println("----------Login----------");
         System.out.println("Insira '1' para Garçom");
