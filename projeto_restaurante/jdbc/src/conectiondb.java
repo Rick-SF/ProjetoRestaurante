@@ -29,8 +29,8 @@ public class conectiondb {
     public static void fecharConexao(Connection conexao){
         if (conexao != null) {
             try {
-                conexao.close();
                 System.out.println("Conexão encerrada.");
+                conexao.close();
             } catch (Exception e) {
                 System.out.println("Erro no encerramento da conexão." + e.getMessage());
             }
