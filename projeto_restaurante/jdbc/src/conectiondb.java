@@ -4,13 +4,12 @@ public class conectiondb {
     //Informações de conexão
     private static final String url = "jdbc:mysql://127.0.0.1:3308/pedidos";
     private static final String user = "ricardo";
-    private static final String password = "62539036";
+    private static final String password = "Xptocmc5!";
     
     private static Connection conexao = null;
 
     //Método para estabelecer conexão com o Banco
     public static Connection conectar(){
-        
         try {
             if(conexao == null){
                 conexao = DriverManager.getConnection(url, user, password);
