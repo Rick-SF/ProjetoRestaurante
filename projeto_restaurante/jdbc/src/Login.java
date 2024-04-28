@@ -10,9 +10,10 @@ public class Login {
 
     // Método para exibir opções de Login
     public void LoginOpcoes(){
-        System.out.println("----------Login----------");
+        System.out.println("\n----------Login----------");
         System.out.println("Insira '1' para Garçom");
         System.out.println("Insira '2' para Administrador");
+        System.out.println("Insira '3' para Sair");
         System.out.printf("--> ");
     }
 
@@ -26,7 +27,7 @@ public class Login {
 
     // Classe para Realizar a Verificação de Login do Usuário
     public boolean LoginGarcom(String GarcomUsuario, String GarcomSenha){
-        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha e Retorna True ou False
+        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha definidos na classe e Retorna True ou False
         if (credenciaisGarcom.containsKey(GarcomUsuario) && credenciaisGarcom.get(GarcomUsuario).equals(GarcomSenha)) {
             return true;
         }else{
@@ -36,7 +37,7 @@ public class Login {
 
     // Classe para Realizar a Verificação de Login do Admin
     public boolean LoginAdmin(String AdminUsuario, String AdminSenha){
-        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha e Retorna True ou False
+        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha definidos na classe e Retorna True ou False
         if (credenciaisAdmin.containsKey(AdminUsuario) && credenciaisAdmin.get(AdminUsuario).equals(AdminSenha)) {
             return true;
         }else{

@@ -1,7 +1,8 @@
 import java.sql.*;
+import java.util.Scanner;
 
 public class Admin {
-    int id = 0;
+    Scanner leitor = new Scanner(System.in);
     
     // Método para exibir opções de Admin
     public void MenuAdmin(){
@@ -9,19 +10,19 @@ public class Admin {
         System.out.println("1: Cadastrar Pratos");
         System.out.println("2: Atualizar Pratos");
         System.out.println("3: Deletar Pratos");
+        System.out.println("4: Logout");
         System.out.printf("--> ");
     }
     
     public void InserirPratos(String nomePrato, double valorPrato){
-        String sql = "INSERT INTO prato (id, nome, valor, disponivel) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO prato (nome, valor, disponivel) VALUES (?, ?, ?)";
     
         try (Connection conexao = conectiondb.conectar();
             PreparedStatement stmt = conexao.prepareStatement(sql)){
 
-            stmt.setInt(1, ++id);
-            stmt.setString(2, nomePrato);
-            stmt.setDouble(3, valorPrato);
-            stmt.setString(4, "1");
+            stmt.setString(1, nomePrato);
+            stmt.setDouble(2, valorPrato);
+            stmt.setString(3, "1");
 
             int LinhasAfetadas = stmt.executeUpdate();
             System.out.println("Linhas Afetadas: "+ LinhasAfetadas);
@@ -29,6 +30,44 @@ public class Admin {
             e.printStackTrace();
         }
     }
+
+    public void AtualizarPratos(){
+        while (true) {
+            System.out.println("1: Mudar Nome de um Prato");
+            System.out.println("2: Mudar Valor de um Prato");
+            System.out.println("3: Mudar Disponibilidade de um Prato");
+            System.out.println("4: Sair");
+            int opcao = leitor.nextInt();
+            leitor.nextLine();
+
+            switch (opcao) {
+                case 1:
+                    System.out.printf("Qual prato deseja mudar o nome? ");
+                    String antigoNome = leitor.nextLine();
+                    System.out.println("Insira o Novo Nome: ");
+                    String novoNome = leitor.nextLine();
+
+                    String sql = "UPDATE prato SET nome = ? WHERE nome = ?";
+
+                    try (Connection conexao = conectiondb.conectar();
+                        PreparedStatement stmt = conexao.prepareStatement(sql)){
+        
+                        stmt.setString(1, novoNome);
+                        stmt.setString(2, antigoNome);
+        
+                        int LinhasAfetadas = stmt.executeUpdate();
+                        System.out.println("Linhas Afetadas: "+ LinhasAfetadas);
+                    }catch(SQLException e){
+                        e.printStackTrace();
+                    }
+                    break;
+                case 4:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }  
 
     public void DeletarPratos(String nomePrato){
         String sql = "DELETE FROM prato WHERE nome = ?";
