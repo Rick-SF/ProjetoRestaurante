@@ -33,6 +33,7 @@ public class Admin {
 
     public void AtualizarPratos(){
         while (true) {
+            System.out.println("\n----------Atualização----------");
             System.out.println("1: Mudar Nome de um Prato");
             System.out.println("2: Mudar Valor de um Prato");
             System.out.println("3: Mudar Disponibilidade de um Prato");
@@ -42,9 +43,9 @@ public class Admin {
 
             switch (opcao) {
                 case 1:
-                    System.out.printf("Qual prato deseja mudar o nome? ");
+                    System.out.printf("Prato no qual deseja mudar o nome: ");
                     String antigoNome = leitor.nextLine();
-                    System.out.println("Insira o Novo Nome: ");
+                    System.out.printf("Insira o Novo Nome: ");
                     String novoNome = leitor.nextLine();
 
                     String sql = "UPDATE prato SET nome = ? WHERE nome = ?";
@@ -56,12 +57,13 @@ public class Admin {
                         stmt.setString(2, antigoNome);
         
                         int LinhasAfetadas = stmt.executeUpdate();
-                        System.out.println("Linhas Afetadas: "+ LinhasAfetadas);
+                        System.out.println("Nome do Prato "+ antigoNome +" atualizado para " + novoNome +".");
+                        System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                     }catch(SQLException e){
                         e.printStackTrace();
                     }
                     break;
-                case 4:
+                case 2:
                     break;
                 default:
                     break;

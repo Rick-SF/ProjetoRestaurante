@@ -13,7 +13,6 @@ public class conectiondb {
         try {
             if(conexao == null){
                 conexao = DriverManager.getConnection(url, user, password);
-                System.out.println("Conexão estabelecida.");
                 return conexao;
             }else{
                 return conexao;
