@@ -80,7 +80,49 @@ public class Admin {
                 }
                 break;
             case 3:
-                ////////////// mudar disponibilidade
+                System.out.printf("Prato no qual deseja mudar a disponibilidade: ");
+                Prato = leitor.nextLine();
+
+                System.out.printf("Disponivel('1') ou Indisponivel('0'): ");
+                int disponibilidade = leitor.nextInt();
+
+                sql = "UPDATE prato SET disponivel = ? WHERE nome = ?";
+
+                if (disponibilidade == 1) {
+                    try (Connection conexao = conectiondb.conectar();
+                    PreparedStatement stmt = conexao.prepareStatement(sql)){
+    
+                    stmt.setInt(1, disponibilidade);
+                    stmt.setString(2, Prato);
+    
+                    int LinhasAfetadas = stmt.executeUpdate();
+                    System.out.println("Disponibilidade do Prato "+ Prato +" atualizado para Disponivel.");
+                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
+                    terminal.limpar(2000);
+
+                    }catch(SQLException e){
+                    e.printStackTrace();
+                    }
+                } else if(disponibilidade == 0) {
+                    try (Connection conexao = conectiondb.conectar();
+                    PreparedStatement stmt = conexao.prepareStatement(sql)){
+    
+                    stmt.setInt(1, disponibilidade);
+                    stmt.setString(2, Prato);
+    
+                    int LinhasAfetadas = stmt.executeUpdate();
+                    System.out.println("Disponibilidade do Prato "+ Prato +" atualizado para Indisponivel.");
+                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
+                    terminal.limpar(2000);
+
+                    }catch(SQLException e){
+                    e.printStackTrace();
+                    }
+                }else {
+                    System.out.println("Opção Inválida");
+                    terminal.limpar(1000);
+                    break;
+                }
                 break;
             default:
                 break;

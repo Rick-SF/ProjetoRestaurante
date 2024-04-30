@@ -2,13 +2,14 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner leitor = new Scanner(System.in);            // Cria Scanner
-        Login login = new Login();                          // Instância da Classe Login
-        Admin admin = new Admin();                          // Instância da Classe Admin
-        LimparTerminal terminal = new LimparTerminal();     // Instância da Classe LimparTerminal
-        boolean MenuAdmin = false, MenuAdminAtualizacao = false, inicio = true;     // Variáveis de Loops
+        Scanner leitor = new Scanner(System.in);                                    // Cria Scanner
+        Login login = new Login();                                                  // Instância da Classe Login
+        Admin admin = new Admin();                                                  // Instância da Classe Admin
+        LimparTerminal terminal = new LimparTerminal();                             // Instância da Classe LimparTerminal
+        boolean inicio = true;
         
         while (inicio) {
+            boolean MenuAdmin = false, MenuAdminAtualizacao = false, logout = false;     // Variáveis de Loops
             login.LoginOpcoes();                    // Exibe as Opções de Login
             int opcao = leitor.nextInt();           // Recebe a opção escolhida
             leitor.nextLine();                      // Limpa o Buffer
@@ -79,7 +80,7 @@ public class Main {
                                         MenuAdminAtualizacao = false;
                                         continue;
                                     }else{
-                                        admin.AtualizarPratos(AtualiOpcao);         // Método para atualizar Pratos
+                                        admin.AtualizarPratos(AtualiOpcao);     // Método para atualizar Pratos
                                     }
                                 }
                                 continue;
@@ -91,23 +92,31 @@ public class Main {
                                 terminal.limpar(2000);
                                 continue;
                             case 4:
+                                System.out.println("Deslogando...");
                                 MenuAdmin = false;
-                                inicio = true;
+                                logout = true;
+                                terminal.limpar(1000);
                                 continue;
                             default:
                                 System.out.println("Opção Inválida");
-                                break;
+                                terminal.limpar(1000);
+                                continue;
                         }
                     }
                 case 3:
-                    System.out.println("Saindo...");
-                    terminal.limpar(1000);
-                    break;
+                    if (logout == true) {
+                        continue;
+                    }else{
+                        System.out.println("Saindo...");
+                        terminal.limpar(500);
+                        inicio = false;
+                        break;
+                    }
                 default:
-                    System.out.println("Opção Inválida.");             // Mensagem de erro para opção inválida
+                    System.out.println("Opção Inválida.");             // Mensagem de erro para opção de Login inválida
             }
         }
         leitor.close();
-        System.out.println("saiu do loop");
+        System.out.println("Programa Encerrado.");
     }
 }
