@@ -5,15 +5,16 @@ public class Main {
         Scanner leitor = new Scanner(System.in);            // Cria Scanner
         Login login = new Login();                          // Instância da Classe Login
         Admin admin = new Admin();                          // Instância da Classe Admin
+        LimparTerminal terminal = new LimparTerminal();     // Instância da Classe LimparTerminal
         
         while (true) {
-            // Exibe as Opções de Login
-            login.LoginOpcoes();
-            int opcao = leitor.nextInt();
+            login.LoginOpcoes();                    // Exibe as Opções de Login
+            int opcao = leitor.nextInt();           // Recebe a opção escolhida
             leitor.nextLine();                      // Limpa o Buffer
+            terminal.limpar(500);             // Limpa o Terminal
             
-            switch (opcao) {
-                case 1:
+            switch (opcao) {                                
+                case 1:// Caso opção "Garçom" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário insere o Usuário de Garçom
                     String GarcomUsuario = leitor.nextLine();      // Armazena a entrada Usuário
 
@@ -22,12 +23,12 @@ public class Main {
 
                     // Faz a Verificação de Usuário e senha pelo Método LoginGarcom
                     if (login.LoginGarcom(GarcomUsuario, GarcomSenha)) {    
-                        System.out.println("Login de Garçom Feito!");        // Retornando True, o Login é confirmado
+                        System.out.println("Login de Garçom Feito!");        // True, o Login é confirmado
                     } else {
-                        System.out.println("Login Inválido.");          // Retornando False, o Login é impedido
+                        System.out.println("Login Inválido.");          // False, o Login é impedido
                     }
                     break;
-                case 2:
+                case 2:// Caso opção "Admin" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário Insere o Usuário de Admin
                     String AdminUsuario = leitor.nextLine();       // Armazena a entrada Usuário
 
@@ -35,28 +36,41 @@ public class Main {
                     String AdminSenha = leitor.nextLine();         // Armazena a entrada Senha
 
                     // Faz a Verificação de Usuário e senha pelo Método LoginAdmin
-                    if (login.LoginAdmin(AdminUsuario, AdminSenha)) {   
-                        System.out.println("Login de Admin Feito!");        // Retornando True, o Login é confirmado e procede
+                    if (login.LoginAdmin(AdminUsuario, AdminSenha)) {        // Retornando True, o Login é confirmado e procede
+                        System.out.println("Login de Admin Feito!");        
+                        terminal.limpar(1000);                        // Limpa o terminal
 
                         admin.MenuAdmin();                              // Exibe o Menu de Admin
-                        int adminopcao = leitor.nextInt();
+                        int AdminOpcao = leitor.nextInt();             // Recebe a opção de admin escolhida
+                        terminal.limpar(500);                  // Limpa o terminal
 
                         leitor.nextLine();                          // Limpa o Buffer
 
-                        switch (adminopcao) {
+                        switch (AdminOpcao) {
                             case 1:
-                                System.out.printf("Nome do Prato: ");    
-                                String nomePrato = leitor.nextLine();
-                                System.out.printf("Valor do Prato: ");
-                                double valorPrato = leitor.nextDouble();
+                                System.out.printf("Nome do Prato a ser Cadastrado: "); // Entrada para Registrar novo Prato
+                                String nomePrato = leitor.nextLine();                      // Armazena novo Prato
+                                System.out.printf("Valor do Prato: ");             // Entrada para Registrar Valor do Prato
+                                double valorPrato = leitor.nextDouble();                 // Armazena o Valor
                                 leitor.nextLine();                              // Limpa o Buffer
 
                                 // Adiciona um novo prato com os parâmetros informados
-                                admin.InserirPratos(nomePrato, valorPrato); 
+                                admin.InserirPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
                                 
                                 break;
                             case 2:
-                                admin.AtualizarPratos();                        // Método para atualizar Pratos
+                                // Menu do Admin para Atualizações no Banco
+                                System.out.println("\n----------Atualização----------");
+                                System.out.println("1: Mudar Nome de um Prato");
+                                System.out.println("2: Mudar Valor de um Prato");
+                                System.out.println("3: Mudar Disponibilidade de um Prato");
+                                System.out.println("4: Sair");
+                                System.out.printf("--> ");
+                                int AtualiOpcao = leitor.nextInt();          // Armazena a opção de atualização escolhida
+                                leitor.nextLine();                          // Limpa o Buffer
+                                terminal.limpar(500);
+
+                                admin.AtualizarPratos(AtualiOpcao);                 // Método para atualizar Pratos
                                 break;
                             case 3:
                                 System.out.println("Nome do Prato a ser Deletado: ");
@@ -79,7 +93,7 @@ public class Main {
                     System.out.println("Saindo...");
                     break;
                 default:
-                    System.out.println("Opção Inválida.");   // Mensagem de erro para opção inválida
+                    System.out.println("Opção Inválida.");              // Mensagem de erro para opção inválida
             }
             
             leitor.close();
