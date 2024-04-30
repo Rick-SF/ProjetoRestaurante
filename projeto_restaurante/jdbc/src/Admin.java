@@ -3,10 +3,11 @@ import java.util.Scanner;
 
 public class Admin {
     Scanner leitor = new Scanner(System.in);
+    LimparTerminal terminal = new LimparTerminal();
     
     // Método para exibir opções de Admin
     public void MenuAdmin(){
-        System.out.println("\n----------Opções----------");
+        System.out.println("\n----------Opções de Admin----------");
         System.out.println("1: Cadastrar Pratos");
         System.out.println("2: Atualizar Pratos");
         System.out.println("3: Deletar Pratos");
@@ -35,58 +36,54 @@ public class Admin {
 
     // Método para atualizar pratos existentes
     public void AtualizarPratos(int AtualiOpcao){
-        while (true) {
+        switch (AtualiOpcao) {
+            case 1:
+                System.out.printf("Prato no qual deseja mudar o nome: ");
+                String antigoNome = leitor.nextLine();
+                System.out.printf("Insira o Novo Nome: ");
+                String novoNome = leitor.nextLine();
 
-            switch (AtualiOpcao) {
-                case 1:
-                    System.out.printf("Prato no qual deseja mudar o nome: ");
-                    String antigoNome = leitor.nextLine();
-                    System.out.printf("Insira o Novo Nome: ");
-                    String novoNome = leitor.nextLine();
+                String sql = "UPDATE prato SET nome = ? WHERE nome = ?";
 
-                    String sql = "UPDATE prato SET nome = ? WHERE nome = ?";
+                try (Connection conexao = conectiondb.conectar();
+                    PreparedStatement stmt = conexao.prepareStatement(sql)){
+    
+                    stmt.setString(1, novoNome);
+                    stmt.setString(2, antigoNome);
+    
+                    int LinhasAfetadas = stmt.executeUpdate();
+                    System.out.println("Nome do Prato "+ antigoNome +" atualizado para " + novoNome +".");
+                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
+                }catch(SQLException e){
+                    e.printStackTrace();
+                }
+                break;
+            case 2:
+                System.out.printf("Prato no qual deseja mudar o preço: ");
+                String Prato = leitor.nextLine();
+                System.out.printf("Novo preço do prato: ");
+                String NovoPreco = leitor.nextLine();
 
-                    try (Connection conexao = conectiondb.conectar();
-                        PreparedStatement stmt = conexao.prepareStatement(sql)){
-        
-                        stmt.setString(1, novoNome);
-                        stmt.setString(2, antigoNome);
-        
-                        int LinhasAfetadas = stmt.executeUpdate();
-                        System.out.println("Nome do Prato "+ antigoNome +" atualizado para " + novoNome +".");
-                        System.out.println("Linhas afetadas: "+ LinhasAfetadas);
-                    }catch(SQLException e){
-                        e.printStackTrace();
-                    }
-                    break;
-                case 2:
-                    System.out.printf("Prato no qual deseja muda o preço: ");
-                    String Prato = leitor.nextLine();
-                    System.out.printf("Novo preço do prato: ");
-                    String NovoPreco = leitor.nextLine();
+                sql = "UPDATE prato SET valor = ? WHERE nome = ?";
 
-                    sql = "UPDATE prato SET preco = ? WHERE nome = ?";
-
-                    try (Connection conexao = conectiondb.conectar();
-                        PreparedStatement stmt = conexao.prepareStatement(sql)){
-        
-                        stmt.setString(1, NovoPreco);
-                        stmt.setString(2, Prato);
-        
-                        int LinhasAfetadas = stmt.executeUpdate();
-                        System.out.println("Preço do Prato " + Prato +" atualizado para R$" + NovoPreco +".");
-                        System.out.println("Linhas afetadas: "+ LinhasAfetadas);
-                    }catch(SQLException e){
-                        e.printStackTrace();
-                    }
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                default:
-                    break;
-            }
+                try (Connection conexao = conectiondb.conectar();
+                    PreparedStatement stmt = conexao.prepareStatement(sql)){
+    
+                    stmt.setString(1, NovoPreco);
+                    stmt.setString(2, Prato);
+    
+                    int LinhasAfetadas = stmt.executeUpdate();
+                    System.out.println("Preço do Prato " + Prato +" atualizado para R$" + NovoPreco +".");
+                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
+                }catch(SQLException e){
+                    e.printStackTrace();
+                }
+                break;
+            case 3:
+                ////////////// mudar disponibilidade
+                break;
+            default:
+                break;
         }
     }  
 
@@ -100,6 +97,7 @@ public class Admin {
             stmt.setString(1, nomePrato);
 
             int LinhasAfetadas = stmt.executeUpdate();
+            System.out.println("Prato "+ nomePrato +" Deletado.");
             System.out.println("Linhas Afetadas: " + LinhasAfetadas);
             
         }catch (SQLException e) {
