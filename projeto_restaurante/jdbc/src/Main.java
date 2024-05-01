@@ -6,7 +6,7 @@ public class Main {
         Login login = new Login();                                                  // Instância da Classe Login
         Admin admin = new Admin();                                                  // Instância da Classe Admin
         LimparTerminal terminal = new LimparTerminal();                             // Instância da Classe LimparTerminal
-        boolean inicio = true;
+        boolean inicio = true;                                                      // Inicio do Loop
         
         while (inicio) {
             boolean MenuAdmin = false, MenuAdminAtualizacao = false, logout = false;     // Variáveis de Loops
@@ -62,6 +62,7 @@ public class Main {
 
                                 // Adiciona um novo prato com os parâmetros informados
                                 admin.InserirPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
+                                terminal.limpar(2000);
                                 continue;
                             case 2:
                                 MenuAdminAtualizacao = true;
@@ -85,7 +86,7 @@ public class Main {
                                 }
                                 continue;
                             case 3:
-                                System.out.println("Nome do Prato a ser Deletado: ");
+                                System.out.println("Nome do Prato a ser Deletado: ");       
                                 nomePrato = leitor.nextLine();
 
                                 admin.DeletarPratos(nomePrato);
@@ -116,6 +117,7 @@ public class Main {
                     System.out.println("Opção Inválida.");             // Mensagem de erro para opção de Login inválida
             }
         }
+        conectiondb.fecharConexao(null);
         leitor.close();
         System.out.println("Programa Encerrado.");
     }

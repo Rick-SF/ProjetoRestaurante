@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class Admin {
     Scanner leitor = new Scanner(System.in);
     LimparTerminal terminal = new LimparTerminal();
+    conectiondb banco = new conectiondb();
     
     // Método para exibir opções de Admin
     public void MenuAdmin(){

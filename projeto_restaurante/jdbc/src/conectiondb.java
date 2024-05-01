@@ -11,12 +11,8 @@ public class conectiondb {
     //Método para estabelecer conexão com o Banco
     public static Connection conectar(){
         try {
-            if(conexao == null){
-                conexao = DriverManager.getConnection(url, user, password);
-                return conexao;
-            }else{
-                return conexao;
-            }
+            conexao = DriverManager.getConnection(url, user, password);
+            return conexao;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
