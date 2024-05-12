@@ -62,7 +62,7 @@ public class Main {
 
                                 // Adiciona um novo prato com os parâmetros informados
                                 admin.InserirPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
-                                terminal.limpar(2000);
+                                terminal.limpar(3000);
                                 continue;
                             case 2:
                                 MenuAdminAtualizacao = true;
@@ -86,13 +86,24 @@ public class Main {
                                 }
                                 continue;
                             case 3:
-                                System.out.println("Nome do Prato a ser Deletado: ");       
-                                nomePrato = leitor.nextLine();
-
-                                admin.DeletarPratos(nomePrato);
-                                terminal.limpar(2000);
+                                //////////// pratos cadastrados
+                                admin.PratosCadastrados();
                                 continue;
                             case 4:
+                                System.out.printf("Nome do Prato a ser Deletado: ");       
+                                nomePrato = leitor.nextLine();                   // Armazena prato escolhido
+                                
+                                if (admin.VerificarPrato(nomePrato) == true) {      // Verifica se o Prato Existe
+                                } else {
+                                    System.out.println("Prato não cadastrado ou não existe.");
+                                    terminal.limpar(2000);
+                                    continue;
+                                }
+
+                                admin.DeletarPratos(nomePrato);                  // Deleta o Prato
+                                terminal.limpar(2000);                     // Limpa o terminal
+                                continue;
+                            case 5:
                                 System.out.println("Deslogando...");
                                 MenuAdmin = false;
                                 logout = true;
