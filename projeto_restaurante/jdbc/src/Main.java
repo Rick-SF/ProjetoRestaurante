@@ -37,6 +37,7 @@ public class Main {
 
                     System.out.printf("Senha: ");           // Usuário Insere a Senha de Admin
                     String AdminSenha = leitor.nextLine();         // Armazena a entrada Senha
+                    terminal.limpar(500);
 
                     // Faz a Verificação de Usuário e senha de Admin pelo Método LoginAdmin
                     if (login.LoginAdmin(AdminUsuario, AdminSenha)) {        // True, o Login é confirmado e procede
@@ -45,6 +46,7 @@ public class Main {
                         MenuAdmin = true;
                     } else {
                         System.out.println("Login Inválido.");         // Retornando False, o Login é impedido.
+                        terminal.limpar(1000);
                         break;
                     }
                     while (MenuAdmin) {
@@ -54,7 +56,7 @@ public class Main {
                         leitor.nextLine();                           // Limpa o Buffer
 
                         switch (AdminOpcao) {
-                            case 1:
+                            case 1: // Cadastrar Pratos
                                 System.out.printf("Nome do Prato a ser Cadastrado: "); // Entrada para Registrar novo Prato
                                 String nomePrato = leitor.nextLine();                      // Armazena novo Prato
                                 System.out.printf("Valor do Prato: ");             // Entrada para Registrar Valor do Prato
@@ -64,7 +66,7 @@ public class Main {
                                 admin.InserirPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
                                 terminal.limpar(3000);
                                 continue;
-                            case 2:
+                            case 2: // Menu de Atualizações de Pratos
                                 MenuAdminAtualizacao = true;
                                 while (MenuAdminAtualizacao) {
                                     // Menu do Admin para Atualizações no Banco
@@ -76,7 +78,7 @@ public class Main {
                                     System.out.printf("--> ");
                                     int AtualiOpcao = leitor.nextInt();          // Armazena a opção de atualização escolhida
                                     leitor.nextLine();                          // Limpa o Buffer
-                                    terminal.limpar(500);
+                                    terminal.limpar(500);                // Limpa o terminal
                                     if (AtualiOpcao == 4) {
                                         MenuAdminAtualizacao = false;
                                         continue;
@@ -85,11 +87,19 @@ public class Main {
                                     }
                                 }
                                 continue;
-                            case 3:
-                                //////////// pratos cadastrados
+                            case 3: // Mostrar Pratos Cadastrados
                                 admin.PratosCadastrados();
-                                continue;
-                            case 4:
+                                System.out.printf("\n1: Voltar\n--> ");
+                                int voltar = leitor.nextInt();
+                                terminal.limpar(500);
+                                if (voltar == 1) {
+                                    System.out.printf("Voltando...");
+                                    terminal.limpar(1000);
+                                    continue;
+                                }else{
+                                    System.out.println("opção inválida");
+                                }
+                            case 4: // Deletar Pratos Cadastrados
                                 System.out.printf("Nome do Prato a ser Deletado: ");       
                                 nomePrato = leitor.nextLine();                   // Armazena prato escolhido
                                 
@@ -103,7 +113,7 @@ public class Main {
                                 admin.DeletarPratos(nomePrato);                  // Deleta o Prato
                                 terminal.limpar(2000);                     // Limpa o terminal
                                 continue;
-                            case 5:
+                            case 5: // Deslogar Admin
                                 System.out.println("Deslogando...");
                                 MenuAdmin = false;
                                 logout = true;
@@ -125,7 +135,7 @@ public class Main {
                         break;
                     }
                 default:
-                    System.out.println("Opção Inválida.");             // Mensagem de erro para opção de Login inválida
+                    System.out.println("Opção Inválida.");       // Mensagem de erro para opção de Login inválida
             }
         }
         conectiondb.fecharConexao(null);
