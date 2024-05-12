@@ -10,7 +10,7 @@ public class Login {
 
     // Método para exibir opções de Login
     public void LoginOpcoes(){
-        System.out.println("\n----------Login----------");
+        System.out.println("----------Login----------");
         System.out.println("Insira '1' para Garçom");
         System.out.println("Insira '2' para Administrador");
         System.out.println("Insira '3' para Sair");

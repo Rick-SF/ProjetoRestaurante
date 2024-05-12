@@ -29,7 +29,7 @@ public class Admin {
             stmt.setString(3, "sim");
 
             int LinhasAfetadas = stmt.executeUpdate();
-            System.out.println("Prato "+ nomePrato +" pelo valor de R$"+ valorPrato +" cadastrado.");
+            System.out.printf("\nPrato '%s' pelo valor de R$%.2f cadastrado.\n",nomePrato, valorPrato);
             System.out.println("Linhas Afetadas: "+ LinhasAfetadas);
         }catch(SQLException e){
             e.printStackTrace();
@@ -63,8 +63,9 @@ public class Admin {
                     stmt.setString(2, antigoNome);
     
                     int LinhasAfetadas = stmt.executeUpdate();
-                    System.out.println("Nome do Prato "+ antigoNome +" atualizado para " + novoNome +".");
+                    System.out.printf("\nNome do Prato '%s' atualizado para '%s'.\n", antigoNome, novoNome);
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
+                    terminal.limpar(3000);
                 }catch(SQLException e){
                     e.printStackTrace();
                 }
@@ -92,7 +93,7 @@ public class Admin {
                     stmt.setString(2, nomePrato);
     
                     int LinhasAfetadas = stmt.executeUpdate();
-                    System.out.println("Preço do Prato " + nomePrato +" atualizado para R$" + NovoPreco +".");
+                    System.out.printf("Preço do Prato '%s' atualizado para R$%.2f.", nomePrato, NovoPreco);
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                 }catch(SQLException e){
                     e.printStackTrace();
@@ -124,7 +125,7 @@ public class Admin {
                     stmt.setString(2, nomePrato);
     
                     int LinhasAfetadas = stmt.executeUpdate();
-                    System.out.println("Disponibilidade do Prato "+ nomePrato +" atualizado para Disponivel.");
+                    System.out.println("Disponibilidade do Prato '"+ nomePrato +"' atualizado para Disponivel.");
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                     terminal.limpar(3000);
 
@@ -139,7 +140,7 @@ public class Admin {
                     stmt.setString(2, nomePrato);
     
                     int LinhasAfetadas = stmt.executeUpdate();
-                    System.out.println("Disponibilidade do Prato "+ nomePrato +" atualizado para Indisponivel.");
+                    System.out.println("Disponibilidade do Prato '"+ nomePrato +"' atualizado para Indisponivel.");
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                     terminal.limpar(3000);
 
@@ -175,6 +176,7 @@ public class Admin {
         }
     }
 
+    // Método para verificar se Prato existe no Banco
     public boolean VerificarPrato(String nomePrato){
         String sql = "SELECT COUNT(*) FROM prato WHERE nome = ?";
 
@@ -199,8 +201,9 @@ public class Admin {
         return false;
     }
 
+    // Método para retornar os pratos cadastrado no Banco
     public void PratosCadastrados(){
-        String sql = "SELECT nome, disponivel FROM prato";
+        String sql = "SELECT nome, valor, disponivel FROM prato";
 
         try (Connection conexao = conectiondb.conectar();
             PreparedStatement stmt = conexao.prepareStatement(sql)){
@@ -210,7 +213,8 @@ public class Admin {
             while (rs.next()) {
                 String prato = rs.getString("nome");
                 String disponivel = rs.getString("disponivel");
-                System.out.println("Prato: "+prato+"\nDisponivel: "+disponivel+"\n");
+                double valor = rs.getDouble("valor");
+                System.out.printf("--------------------\nPrato: %s\nValor: R$%.2f\nDisponivel: %s\n",prato, valor, disponivel);
             }
             
         }catch (SQLException e) {
