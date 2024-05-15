@@ -63,19 +63,14 @@ public class Main {
                                 double valorPrato = leitor.nextDouble();                 // Armazena o Valor
 
                                 // Adiciona um novo prato com os parâmetros informados
-                                admin.InserirPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
+                                admin.CadastrarPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
                                 terminal.limpar(3000);
                                 continue;
-                            case 2: // Menu de Atualizações de Pratos
-                                MenuAdminAtualizacao = true;
+                            case 2: // Atualizações de Pratos
+                                MenuAdminAtualizacao = true;                        // Exibi Menu de Atualizações
                                 while (MenuAdminAtualizacao) {
                                     // Menu do Admin para Atualizações no Banco
-                                    System.out.println("\n----------Atualização----------");
-                                    System.out.println("1: Mudar Nome de um Prato");
-                                    System.out.println("2: Mudar Valor de um Prato");
-                                    System.out.println("3: Mudar Disponibilidade de um Prato");
-                                    System.out.println("4: Voltar");
-                                    System.out.printf("--> ");
+                                    admin.MenuAdminAtualizar();
                                     int AtualiOpcao = leitor.nextInt();          // Armazena a opção de atualização escolhida
                                     leitor.nextLine();                          // Limpa o Buffer
                                     terminal.limpar(500);                // Limpa o terminal
@@ -88,8 +83,13 @@ public class Main {
                                 }
                                 continue;
                             case 3: // Mostrar Pratos Cadastrados
-                                admin.PratosCadastrados();
-                                System.out.printf("\n1: Voltar\n--> ");
+                                if (admin.PratosCadastrados()){
+                                    System.out.printf("--------------------\n1: Voltar\n--> ");
+                                } else{
+                                    System.out.println("Não há Pratos cadastrados.");
+                                    terminal.limpar(2000);
+                                    continue;
+                                }
                                 int voltar = leitor.nextInt();
                                 terminal.limpar(500);
                                 if (voltar == 1) {
@@ -113,7 +113,14 @@ public class Main {
                                 admin.DeletarPratos(nomePrato);                  // Deleta o Prato
                                 terminal.limpar(2000);                     // Limpa o terminal
                                 continue;
-                            case 5: // Deslogar Admin
+                            case 5: // Administrar Garçons
+                                admin.MenuAdminGarcom();                         // Exibe menu de Administrar Garçons
+                                int opcaoAdminGarcom = leitor.nextInt();         // Recebe a opção escolhida
+                                leitor.nextLine();                               // Limpa o Buffer
+                                terminal.limpar(500);
+                                admin.AdministrarGarcons(opcaoAdminGarcom);      // opção é decidida no método da classe Admin
+                                continue;
+                            case 6: // Deslogar Admin
                                 System.out.println("Deslogando...");
                                 MenuAdmin = false;
                                 logout = true;

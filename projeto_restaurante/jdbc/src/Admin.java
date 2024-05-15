@@ -4,21 +4,39 @@ import java.util.Scanner;
 public class Admin {
     Scanner leitor = new Scanner(System.in);
     LimparTerminal terminal = new LimparTerminal();
-    conectiondb banco = new conectiondb();
+    Login login = new Login();
     
     // Método para exibir opções de Admin
     public void MenuAdmin(){
-        System.out.println("\n----------Opções de Admin----------");
+        System.out.println("----------Opções de Admin----------");
         System.out.println("1: Cadastrar Pratos");
         System.out.println("2: Atualizar Pratos");
         System.out.println("3: Pratos Cadastrados");
         System.out.println("4: Deletar Pratos");
-        System.out.println("5: Logout");
+        System.out.println("5: Administrar Garçons");
+        System.out.println("6: Logout");
+        System.out.printf("--> ");
+    }
+
+    // Método para exibir opções de Administrar Garçons
+    public void MenuAdminGarcom(){
+        System.out.println("----------Garçons----------");
+        System.out.println("1: Cadastrar novo Garçom");
+        System.out.printf("--> ");
+    }
+
+    // Método para exibir opções de Atualizar Pratos
+    public void MenuAdminAtualizar(){
+        System.out.println("\n----------Atualização----------");
+        System.out.println("1: Mudar Nome de um Prato");
+        System.out.println("2: Mudar Valor de um Prato");
+        System.out.println("3: Mudar Disponibilidade de um Prato");
+        System.out.println("4: Voltar");
         System.out.printf("--> ");
     }
     
-    // Método para inserir pratos novos
-    public void InserirPratos(String nomePrato, double valorPrato){
+    // Método para Cadastrar novos Pratos
+    public void CadastrarPratos(String nomePrato, double valorPrato){
         String sql = "INSERT INTO prato (nome, valor, disponivel) VALUES (?, ?, ?)";
     
         try (Connection conexao = conectiondb.conectar();
@@ -42,8 +60,6 @@ public class Admin {
             case 1: // Mudar nome de um Prato
                 System.out.printf("Prato no qual deseja mudar o nome: ");
                 String antigoNome = leitor.nextLine();
-                System.out.printf("Insira o Novo Nome: ");
-                String novoNome = leitor.nextLine();
 
                 String nomePrato = antigoNome;
                 if(VerificarPrato(nomePrato)){         // Verifica se o prato existe
@@ -53,6 +69,9 @@ public class Admin {
                     terminal.limpar(2000);                                      // Senão, Informa e não continua
                     break;
                 }
+                
+                System.out.printf("Insira o Novo Nome: ");
+                String novoNome = leitor.nextLine();
 
                 String sql = "UPDATE prato SET nome = ? WHERE nome = ?";
 
@@ -156,7 +175,36 @@ public class Admin {
             default:
                 break;
         }
-    }  
+    }
+
+    // Método para retornar os pratos cadastrado no Banco
+    public boolean PratosCadastrados(){
+        String sql = "SELECT nome, valor, disponivel FROM prato";
+
+        try (Connection conexao = conectiondb.conectar();
+            PreparedStatement stmt = conexao.prepareStatement(sql)){
+            
+            ResultSet rs = stmt.executeQuery();
+
+            int count = 0;    // variável para testar se há pratos cadastrados
+            
+            while (rs.next()) {
+                String prato = rs.getString("nome");
+                String disponivel = rs.getString("disponivel");
+                double valor = rs.getDouble("valor");
+                System.out.printf("--------------------\nPrato: %s\nValor: R$%.2f\nDisponivel: %s\n",prato, valor, disponivel);
+                count++;
+            }
+
+            if (count == 0) {       // Testa se foi encontrado Pratos cadastrados
+                return false;
+            }
+            
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 
     // Método para deletar pratos existentes
     public void DeletarPratos(String nomePrato){
@@ -173,6 +221,23 @@ public class Admin {
             
         }catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void AdministrarGarcons(int opcaoAdminGarcom){
+        switch (opcaoAdminGarcom) {
+            case 1:
+                System.out.printf("Usuário do novo Garçom: ");
+                String GarcomUsuario = leitor.nextLine();
+                System.out.printf("Senha do Novo Garçom: ");
+                String GarcomSenha = leitor.nextLine();
+                login.CriarGarcom(GarcomUsuario, GarcomSenha);
+                terminal.limpar(500);
+                System.out.println("Cadastro Feito!");
+                terminal.limpar(3000);
+                break;
+            default:
+                break;
         }
     }
 
@@ -201,24 +266,4 @@ public class Admin {
         return false;
     }
 
-    // Método para retornar os pratos cadastrado no Banco
-    public void PratosCadastrados(){
-        String sql = "SELECT nome, valor, disponivel FROM prato";
-
-        try (Connection conexao = conectiondb.conectar();
-            PreparedStatement stmt = conexao.prepareStatement(sql)){
-            
-            ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                String prato = rs.getString("nome");
-                String disponivel = rs.getString("disponivel");
-                double valor = rs.getDouble("valor");
-                System.out.printf("--------------------\nPrato: %s\nValor: R$%.2f\nDisponivel: %s\n",prato, valor, disponivel);
-            }
-            
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -5,8 +5,8 @@ import java.util.Map;
 public class Login {
     
     // Usando HashMap para realizar o Login dos Usuários
-    private Map<String, String> credenciaisGarcom;
-    private Map<String, String> credenciaisAdmin;
+    private Map<String, String> credenciaisGarcom = new HashMap<>();
+    private final Map<String, String> credenciaisAdmin = new HashMap<>();
 
     // Método para exibir opções de Login
     public void LoginOpcoes(){
@@ -17,12 +17,14 @@ public class Login {
         System.out.printf("--> ");
     }
 
-    // Definindo credenciais de Login para Garçom e administrador
+    // Definindo credenciais de Login para Administrador
     public Login(){
-        credenciaisGarcom = new HashMap<>();                                // instânciando Usuários de Garçom
-        credenciaisAdmin = new HashMap<>();                                 // instânciando Usuários de Admin
-        credenciaisGarcom.put("garcom", "garcom123");             // Definindo um Usuário e Senha para Garçom
         credenciaisAdmin.put("admin", "admin123");                // Definindo um Usuário e Senha para Admin
+    }
+
+    // Criando novo Garçom
+    public void CriarGarcom(String GarcomUsuario, String GarcomSenha){
+        credenciaisGarcom.put(GarcomUsuario, GarcomSenha);
     }
 
     // Classe para Realizar a Verificação de Login do Usuário
