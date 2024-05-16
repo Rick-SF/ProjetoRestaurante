@@ -226,14 +226,18 @@ public class Admin {
 
     public void AdministrarGarcons(int opcaoAdminGarcom){
         switch (opcaoAdminGarcom) {
-            case 1:
+            case 1: // Cria novo Garçom
+                System.out.print("Nome do Garçom: ");
+                String nomeGarcom = leitor.nextLine();
+                System.out.printf("Idade do Garcom: ");
+                int idadeGarcom = leitor.nextInt();
+                leitor.nextLine();
                 System.out.printf("Usuário do novo Garçom: ");
-                String GarcomUsuario = leitor.nextLine();
+                String usuarioGarcom = leitor.nextLine();
                 System.out.printf("Senha do Novo Garçom: ");
-                String GarcomSenha = leitor.nextLine();
-                login.CriarGarcom(GarcomUsuario, GarcomSenha);
+                String senhaGarcom = leitor.nextLine();
                 terminal.limpar(500);
-                System.out.println("Cadastro Feito!");
+                login.CriarGarcom(nomeGarcom, idadeGarcom, usuarioGarcom, senhaGarcom);
                 terminal.limpar(3000);
                 break;
             default:
