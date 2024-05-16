@@ -18,13 +18,13 @@ public class Main {
             switch (opcao) {                                
                 case 1:// Caso opção "Garçom" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário insere o Usuário de Garçom
-                    String GarcomUsuario = leitor.nextLine();      // Armazena a entrada Usuário
+                    String usuarioGarcom = leitor.nextLine();      // Armazena a entrada Usuário
 
                     System.out.printf("Senha: ");           // Usuário insere a Senha de Garçom
-                    String GarcomSenha = leitor.nextLine();        // Armazena a entrada Senha
+                    String senhaGarcom = leitor.nextLine();        // Armazena a entrada Senha
 
                     // Faz a Verificação de Usuário e senha pelo Método LoginGarcom
-                    if (login.LoginGarcom(GarcomUsuario, GarcomSenha)) {     // True, o Login é confirmado
+                    if (login.LoginGarcom(usuarioGarcom, senhaGarcom)) {     // True, o Login é confirmado
                         System.out.println("Login de Garçom Feito!");        
                     } else {                                                // False, o Login é impedido
                         System.out.println("Login Inválido.");
