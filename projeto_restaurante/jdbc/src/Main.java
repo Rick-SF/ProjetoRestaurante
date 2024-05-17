@@ -33,14 +33,14 @@ public class Main {
                     }
                 case 2:// Caso opção "Admin" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário Insere o Usuário de Admin
-                    String AdminUsuario = leitor.nextLine();       // Armazena a entrada Usuário
+                    String usuarioAdmin = leitor.nextLine();       // Armazena a entrada Usuário
 
                     System.out.printf("Senha: ");           // Usuário Insere a Senha de Admin
-                    String AdminSenha = leitor.nextLine();         // Armazena a entrada Senha
+                    String senhaAdmin = leitor.nextLine();         // Armazena a entrada Senha
                     terminal.limpar(500);
 
                     // Faz a Verificação de Usuário e senha de Admin pelo Método LoginAdmin
-                    if (login.LoginAdmin(AdminUsuario, AdminSenha)) {        // True, o Login é confirmado e procede
+                    if (login.LoginAdmin(usuarioAdmin, senhaAdmin)) {        // True, o Login é confirmado e procede
                         System.out.println("Login de Admin Feito!");        
                         terminal.limpar(1000);                        // Limpa o terminal
                         MenuAdmin = true;
@@ -83,7 +83,7 @@ public class Main {
                                 }
                                 continue;
                             case 3: // Mostrar Pratos Cadastrados
-                                if (admin.PratosCadastrados()){
+                                if (admin.PratosCadastrados()){                         
                                     System.out.printf("--------------------\n1: Voltar\n--> ");
                                 } else{
                                     System.out.println("Não há Pratos cadastrados.");
@@ -95,7 +95,7 @@ public class Main {
                                 if (voltar == 1) {
                                     System.out.printf("Voltando...");
                                     terminal.limpar(1000);
-                                    continue;
+                                    continue;                                               // Volta para o Menu
                                 }else{
                                     System.out.println("opção inválida");
                                 }
@@ -117,13 +117,20 @@ public class Main {
                                 admin.MenuAdminGarcom();                         // Exibe menu de Administrar Garçons
                                 int opcaoAdminGarcom = leitor.nextInt();         // Recebe a opção escolhida
                                 leitor.nextLine();                               // Limpa o Buffer
-                                terminal.limpar(500);
-                                admin.AdministrarGarcons(opcaoAdminGarcom);      // opção é decidida no método da classe Admin
-                                continue;
+                                if (opcaoAdminGarcom == 3) {
+                                    terminal.limpar(500);
+                                    System.out.println("Voltando...");
+                                    terminal.limpar(1000);
+                                    continue;
+                                } else {
+                                    terminal.limpar(500);
+                                    admin.AdministrarGarcons(opcaoAdminGarcom);      // Opção é decidida no método da classe Admin
+                                    continue;
+                                }
                             case 6: // Deslogar Admin
                                 System.out.println("Deslogando...");
-                                MenuAdmin = false;
-                                logout = true;
+                                MenuAdmin = false;                               // False para sair do Menu do Admin
+                                logout = true;                                   // True para voltar ao Menu Login
                                 terminal.limpar(1000);
                                 continue;
                             default:
@@ -132,7 +139,7 @@ public class Main {
                                 continue;
                         }
                     }
-                case 3:
+                case 3: // Encerra Programa
                     if (logout == true) {
                         continue;
                     }else{
