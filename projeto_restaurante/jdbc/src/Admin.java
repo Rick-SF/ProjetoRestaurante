@@ -5,6 +5,7 @@ public class Admin {
     Scanner leitor = new Scanner(System.in);
     LimparTerminal terminal = new LimparTerminal();
     Login login = new Login();
+    Garcom garcom;
     
     // Método para exibir opções de Admin
     public void MenuAdmin(){
@@ -18,13 +19,7 @@ public class Admin {
         System.out.printf("--> ");
     }
 
-    // Método para exibir opções de Administrar Garçons
-    public void MenuAdminGarcom(){
-        System.out.println("----------Garçons----------");
-        System.out.println("1: Cadastrar novo Garçom");
-        System.out.printf("--> ");
-    }
-
+    
     // Método para exibir opções de Atualizar Pratos
     public void MenuAdminAtualizar(){
         System.out.println("\n----------Atualização----------");
@@ -32,6 +27,15 @@ public class Admin {
         System.out.println("2: Mudar Valor de um Prato");
         System.out.println("3: Mudar Disponibilidade de um Prato");
         System.out.println("4: Voltar");
+        System.out.printf("--> ");
+    }
+    
+    // Método para exibir opções de Administrar Garçons
+    public void MenuAdminGarcom(){
+        System.out.println("----------Garçons----------");
+        System.out.println("1: Cadastrar novo Garçom");
+        System.out.println("2: Excluir Garçom");
+        System.out.println("3: Voltar");
         System.out.printf("--> ");
     }
     
@@ -227,18 +231,18 @@ public class Admin {
     public void AdministrarGarcons(int opcaoAdminGarcom){
         switch (opcaoAdminGarcom) {
             case 1: // Cria novo Garçom
-                System.out.print("Nome do Garçom: ");
-                String nomeGarcom = leitor.nextLine();
-                System.out.printf("Idade do Garcom: ");
-                int idadeGarcom = leitor.nextInt();
-                leitor.nextLine();
-                System.out.printf("Usuário do novo Garçom: ");
-                String usuarioGarcom = leitor.nextLine();
-                System.out.printf("Senha do Novo Garçom: ");
-                String senhaGarcom = leitor.nextLine();
+                garcom = new Garcom(null, 0, null, null);
+                garcom.setNome(terminal.StringNaoVazia("Nome do Garçom: "));
+                System.out.printf("Idade do Garçom: ");
+                garcom.setIdade(leitor.nextInt());
+                leitor.nextLine();                                                                  // Limpa o buffer
+                garcom.setUsuarioGarcom(terminal.StringNaoVazia("Usuario do Garçom: "));
+                garcom.setSenhaGarcom(terminal.StringNaoVazia("Senha do Garçom: "));
                 terminal.limpar(500);
-                login.CriarGarcom(nomeGarcom, idadeGarcom, usuarioGarcom, senhaGarcom);
+                login.CriarGarcom(garcom.getNome(), garcom.getIdade(), garcom.getUsuarioGarcom(), garcom.getSenhaGarcom());
                 terminal.limpar(3000);
+                break;
+            case 2:
                 break;
             default:
                 break;
