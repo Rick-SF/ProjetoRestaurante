@@ -1,14 +1,7 @@
-import java.util.HashMap;
-import java.util.Map;
 import java.sql.*;
 
 // Classe para Fazer Login como Garçom ou Administrador
 public class Login {
-    
-    // Usando HashMap para realizar o Login dos Usuários
-    private Map<String, String> credenciaisGarcom = new HashMap<>();
-    private final Map<String, String> credenciaisAdmin = new HashMap<>();
-
     // Método para exibir opções de Login
     public void LoginOpcoes(){
         System.out.println("----------Login----------");
@@ -16,11 +9,6 @@ public class Login {
         System.out.println("Insira '2' para Administrador");
         System.out.println("Insira '3' para Sair");
         System.out.printf("--> ");
-    }
-
-    // Definindo credenciais de Login para Administrador
-    public Login(){
-        credenciaisAdmin.put("admin", "admin123");            // Definindo um Usuário e Senha para Admin
     }
 
     public void CriarGarcom (String nomeGarcom, int idadeGarcom, String usuarioGarcom, String senhaGarcom){
@@ -51,16 +39,10 @@ public class Login {
             stmt2.setString(2, usuarioGarcom);
             stmt2.setString(3, senhaGarcom);
 
-            credenciaisGarcom.put(usuarioGarcom, senhaGarcom);         // Criando novo Login para Garçom
-
             int LinhasAfetadas2 = stmt2.executeUpdate();
 
             System.out.println("Linhas Afetadas Tabela Garçom: "+ LinhasAfetadas1);
             System.out.println("Linhas Afetadas Tabela Login: "+ LinhasAfetadas2);
-
-            stmt1.close();
-            stmt2.close();
-            conexao.close();
 
             System.out.println("Cadastro Feito!");
 
@@ -69,23 +51,49 @@ public class Login {
         }
     }    
     
-    // Classe para Realizar a Verificação de Login do Usuário
+    // Classe para Realizar a Verificação de Login do Garçom
     public boolean LoginGarcom(String usuarioGarcom, String senhaGarcom){
-        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha definidos na classe e Retorna True ou False
-        if (credenciaisGarcom.containsKey(usuarioGarcom) && credenciaisGarcom.get(usuarioGarcom).equals(senhaGarcom)) {
-            return true;
-        }else{
-            return false;
+        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha definidos no Banco de Dados e Retorna True ou False
+        boolean LoginFeito = false;
+        String sql = "SELECT * FROM login WHERE usuario = ? AND senha = ?";
+
+        try (Connection conexao = conectiondb.conectar();
+            PreparedStatement stmt = conexao.prepareStatement(sql)){
+                
+            stmt.setString(1, usuarioGarcom);
+            stmt.setString(2, senhaGarcom);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            if (resultSet.next()) {
+                LoginFeito = true;
+            }
+        } catch (SQLException e){
+            System.out.println("Erro ao verificar Login." + e.getMessage());
         }
+        return LoginFeito;
     }
 
     // Classe para Realizar a Verificação de Login do Admin
-    public boolean LoginAdmin(String AdminUsuario, String AdminSenha){
-        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha definidos na classe e Retorna True ou False
-        if (credenciaisAdmin.containsKey(AdminUsuario) && credenciaisAdmin.get(AdminUsuario).equals(AdminSenha)) {
-            return true;
-        }else{
-            return false;
+    public boolean LoginAdmin(String usuarioAdmin, String senhaAdmin){
+        // Verifica se a entrada do Usuário se iguala ao Usuário e Senha definidos no Banco de Dados e Retorna True ou False
+        boolean LoginFeito = false;
+        String sql = "SELECT * FROM administrador WHERE usuario = ? AND senha = ?";
+
+        try (Connection conexao = conectiondb.conectar();
+            PreparedStatement stmt = conexao.prepareStatement(sql)){
+                
+            stmt.setString(1, usuarioAdmin);
+            stmt.setString(2, senhaAdmin);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            if (resultSet.next()) {
+                LoginFeito = true;
+            }
+        } catch (SQLException e){
+            System.out.println("Erro ao verificar Login." + e.getMessage());
         }
+        return LoginFeito;
     }
 }
