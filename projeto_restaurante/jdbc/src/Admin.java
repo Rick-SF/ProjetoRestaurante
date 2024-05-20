@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class Admin {
     Scanner leitor = new Scanner(System.in);
-    LimparTerminal terminal = new LimparTerminal();
+    Auxilios auxilios = new Auxilios();
     Login login = new Login();
     Garcom garcom;
     
@@ -35,7 +35,8 @@ public class Admin {
         System.out.println("----------Garçons----------");
         System.out.println("1: Cadastrar novo Garçom");
         System.out.println("2: Excluir Garçom");
-        System.out.println("3: Voltar");
+        System.out.println("3: Garçons Cadastrados");
+        System.out.println("4: Voltar");
         System.out.printf("--> ");
     }
     
@@ -70,7 +71,7 @@ public class Admin {
                     // Se sim, continua...
                 } else{                                             
                     System.out.println("Prato não cadastrado ou não existe.");
-                    terminal.limpar(2000);                                      // Senão, Informa e não continua
+                    auxilios.limparTerminal(2000);                                      // Senão, Informa e não continua
                     break;
                 }
                 
@@ -88,22 +89,23 @@ public class Admin {
                     int LinhasAfetadas = stmt.executeUpdate();
                     System.out.printf("\nNome do Prato '%s' atualizado para '%s'.\n", antigoNome, novoNome);
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
-                    terminal.limpar(3000);
+                    auxilios.limparTerminal(3000);
                 }catch(SQLException e){
                     e.printStackTrace();
                 }
                 break;
             case 2: // Mudar Valor de um Prato
                 System.out.printf("Prato no qual deseja mudar o preço: ");
+                leitor.nextLine();
                 nomePrato = leitor.nextLine();
                 System.out.printf("Novo preço do prato: ");
-                String NovoPreco = leitor.nextLine();
+                double NovoPreco = leitor.nextDouble();
 
                 if (VerificarPrato(nomePrato)) {            // Verifica se o Prato Existe
                     // Se sim, continua...
                 }else{
                     System.out.println("Prato não cadastrado ou não existe.");
-                    terminal.limpar(2000);                                      // Senão, Informa e não continua
+                    auxilios.limparTerminal(2000);                                      // Senão, Informa e não continua
                     break;
                 }
 
@@ -112,7 +114,7 @@ public class Admin {
                 try (Connection conexao = conectiondb.conectar();
                     PreparedStatement stmt = conexao.prepareStatement(sql)){
     
-                    stmt.setString(1, NovoPreco);
+                    stmt.setDouble(1, NovoPreco);
                     stmt.setString(2, nomePrato);
     
                     int LinhasAfetadas = stmt.executeUpdate();
@@ -130,7 +132,7 @@ public class Admin {
                     // Se sim, continua...
                 }else{                                              
                     System.out.println("Prato não existe ou não cadastrado.");
-                    terminal.limpar(2000);                                      // Senão, informa e não continua
+                    auxilios.limparTerminal(2000);                                      // Senão, informa e não continua
                     break;
                 }
 
@@ -150,7 +152,7 @@ public class Admin {
                     int LinhasAfetadas = stmt.executeUpdate();
                     System.out.println("Disponibilidade do Prato '"+ nomePrato +"' atualizado para Disponivel.");
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
-                    terminal.limpar(3000);
+                    auxilios.limparTerminal(3000);
 
                     }catch(SQLException e){
                     e.printStackTrace();
@@ -165,14 +167,14 @@ public class Admin {
                     int LinhasAfetadas = stmt.executeUpdate();
                     System.out.println("Disponibilidade do Prato '"+ nomePrato +"' atualizado para Indisponivel.");
                     System.out.println("Linhas afetadas: "+ LinhasAfetadas);
-                    terminal.limpar(3000);
+                    auxilios.limparTerminal(3000);
 
                     }catch(SQLException e){
                     e.printStackTrace();
                     }
                 }else {
                     System.out.println("Opção Inválida");
-                    terminal.limpar(1000);
+                    auxilios.limparTerminal(1000);
                     break;
                 }
                 break;
@@ -232,20 +234,103 @@ public class Admin {
         switch (opcaoAdminGarcom) {
             case 1: // Cria novo Garçom
                 garcom = new Garcom(null, 0, null, null);
-                garcom.setNome(terminal.StringNaoVazia("Nome do Garçom: "));
+                garcom.setNome(auxilios.StringNaoVazia("Nome do Garçom: "));
                 System.out.printf("Idade do Garçom: ");
                 garcom.setIdade(leitor.nextInt());
                 leitor.nextLine();                                                                  // Limpa o buffer
-                garcom.setUsuarioGarcom(terminal.StringNaoVazia("Usuario do Garçom: "));
-                garcom.setSenhaGarcom(terminal.StringNaoVazia("Senha do Garçom: "));
-                terminal.limpar(500);
+                garcom.setUsuarioGarcom(auxilios.StringNaoVazia("Usuario do Garçom: "));
+                garcom.setSenhaGarcom(auxilios.StringNaoVazia("Senha do Garçom: "));
+                auxilios.limparTerminal(500);
                 login.CriarGarcom(garcom.getNome(), garcom.getIdade(), garcom.getUsuarioGarcom(), garcom.getSenhaGarcom());
-                terminal.limpar(3000);
+                auxilios.limparTerminal(3000);
                 break;
-            case 2:
+            case 2: // Deletar um Garçom
+                System.out.printf("Insira o nome do Garçom para deletar: ");
+                String nomeGarcom = leitor.nextLine();
+
+                // Preparando as QUERIES
+                String sqlGarcomID = "SELECT id FROM garcom WHERE nome = ?";
+                String sqlLogin = "DELETE FROM login WHERE id_garcom = ?";
+                String sqlGarcom = "DELETE FROM garcom WHERE id = ?";
+
+                // Estabelecendo Conexão e preparando os parâmetros das QUERIES
+                try (Connection conexao = conectiondb.conectar();
+                PreparedStatement stmt1 = conexao.prepareStatement(sqlGarcomID);
+                PreparedStatement stmt2 = conexao.prepareStatement(sqlLogin);
+                PreparedStatement stmt3 = conexao.prepareStatement(sqlGarcom)){
+
+                    // Obter o ID do Garçom
+                    stmt1.setString(1, nomeGarcom);
+                    ResultSet rs = stmt1.executeQuery();
+
+                    if (rs.next()) {
+                        int GarcomID = rs.getInt("id");
+
+                        // Deletar credencias de Login do Garçom da tabela login através do ID obtido
+                        stmt2.setInt(1, GarcomID);
+                        stmt2.executeUpdate();
+
+                        // Deletar Garçom da tabela garcom através do mesmo ID
+                        stmt3.setInt(1, GarcomID);
+                        stmt3.executeUpdate();
+
+
+                        // Executar as operações caso dê tudo certo
+                        System.out.println("Garçom "+nomeGarcom+" Deletado com sucesso.");
+                        auxilios.limparTerminal(3000);
+                        break;
+                    } else {
+                        throw new SQLException("Garçom não encontrado com o nome: "+ nomeGarcom);
+                    }
+                } catch(SQLException e){
+                    System.out.println("Erro ao Deletar Dados. "+ e.getMessage());
+                }
+                auxilios.limparTerminal(2000);
+                break;
+            case 3: // Garçons Cadastrados
+                String sql = "SELECT nome, idade FROM garcom";
+                
+                // Estabelecendo Conexão e preparando os parâmetros das QUERIES
+                try (Connection conexao = conectiondb.conectar();
+                PreparedStatement stmt = conexao.prepareStatement(sql)){
+
+                    ResultSet rs = stmt.executeQuery();
+
+                    int count = 0;    // variável para testar se há garçons cadastrados
+            
+                    while (rs.next()) {
+                        String nome = rs.getString("nome");
+                        double idade = rs.getDouble("idade");
+                        System.out.printf("--------------------\nNome do Garçom: %s\nIdade: %f\n", nome, idade);
+                        count++;
+                    }
+                    
+                    if (count == 0) {       // Testa se foi encontrado Garçons cadastrados
+                        System.out.println("Não há Garçons cadastrados.");;
+                    }
+
+                } catch (SQLException e){
+                    System.out.println("Erro ao consultar dados. " + e.getMessage());
+                }
+                // Opção Voltar após mostrar os resultados
+                System.out.println("--------------------\n1: Voltar");
+                System.out.printf("--> ");
+                int voltar = leitor.nextInt();
+                if (voltar == 1) {
+                    Main.voltarGarcons = true;                                 // Volta para o Menu
+                    auxilios.limparTerminal(300);
+                    System.out.printf("Voltando...");
+                    auxilios.limparTerminal(500);
+                    break;                                               
+                }else{
+                    System.out.println("opção inválida");
+                }
                 break;
             default:
+                System.out.println("Opção inválida.");
+                auxilios.limparTerminal(500);
                 break;
+            
         }
     }
 
