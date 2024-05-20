@@ -1,19 +1,20 @@
 import java.util.Scanner;
 
 public class Main {
+    static boolean voltarGarcons = false;                          // Variável pública para voltar o menu de mostrar Garçons
     public static void main(String[] args) {
         Scanner leitor = new Scanner(System.in);                                    // Cria Scanner
         Login login = new Login();                                                  // Instância da Classe Login
         Admin admin = new Admin();                                                  // Instância da Classe Admin
-        LimparTerminal terminal = new LimparTerminal();                             // Instância da Classe LimparTerminal
+        Auxilios auxilios = new Auxilios();                             // Instância da Classe Auxilios
         boolean inicio = true;                                                      // Inicio do Loop
         
         while (inicio) {
             boolean MenuAdmin = false, MenuAdminAtualizacao = false, logout = false;     // Variáveis de Loops
-            login.LoginOpcoes();                    // Exibe as Opções de Login
-            int opcao = leitor.nextInt();           // Recebe a opção escolhida
-            leitor.nextLine();                      // Limpa o Buffer
-            terminal.limpar(500);             // Limpa o Terminal
+            login.LoginOpcoes();                                                         // Exibe as Opções de Login
+            int opcao = leitor.nextInt();                                                // Recebe a opção escolhida
+            leitor.nextLine();                                                           // Limpa o Buffer
+            auxilios.limparTerminal(500);                                                  // Limpa o terminal
             
             switch (opcao) {                                
                 case 1:// Caso opção "Garçom" escolhida
@@ -28,7 +29,7 @@ public class Main {
                         System.out.println("Login de Garçom Feito!");        
                     } else {                                                // False, o Login é impedido
                         System.out.println("Login Inválido.");
-                        terminal.limpar(1000);
+                        auxilios.limparTerminal(1000);
                         continue;                                       // Volta para a tela de Login        
                     }
                 case 2:// Caso opção "Admin" escolhida
@@ -37,22 +38,22 @@ public class Main {
 
                     System.out.printf("Senha: ");           // Usuário Insere a Senha de Admin
                     String senhaAdmin = leitor.nextLine();         // Armazena a entrada Senha
-                    terminal.limpar(500);
+                    auxilios.limparTerminal(500);
 
                     // Faz a Verificação de Usuário e senha de Admin pelo Método LoginAdmin
                     if (login.LoginAdmin(usuarioAdmin, senhaAdmin)) {        // True, o Login é confirmado e procede
                         System.out.println("Login de Admin Feito!");        
-                        terminal.limpar(1000);                        // Limpa o terminal
+                        auxilios.limparTerminal(1000);                        // Limpa o terminal
                         MenuAdmin = true;
                     } else {
                         System.out.println("Login Inválido.");         // Retornando False, o Login é impedido.
-                        terminal.limpar(1000);
+                        auxilios.limparTerminal(1000);
                         break;
                     }
                     while (MenuAdmin) {
                         admin.MenuAdmin();                              // Exibe o Menu Opções de Admin
                         int AdminOpcao = leitor.nextInt();             // Recebe a opção de admin escolhida
-                        terminal.limpar(500);                   // Limpa o terminal
+                        auxilios.limparTerminal(500);                   // Limpa o terminal
                         leitor.nextLine();                           // Limpa o Buffer
 
                         switch (AdminOpcao) {
@@ -64,7 +65,7 @@ public class Main {
 
                                 // Adiciona um novo prato com os parâmetros informados
                                 admin.CadastrarPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
-                                terminal.limpar(3000);
+                                auxilios.limparTerminal(3000);
                                 continue;
                             case 2: // Atualizações de Pratos
                                 MenuAdminAtualizacao = true;                        // Exibi Menu de Atualizações
@@ -72,8 +73,7 @@ public class Main {
                                     // Menu do Admin para Atualizações no Banco
                                     admin.MenuAdminAtualizar();
                                     int AtualiOpcao = leitor.nextInt();          // Armazena a opção de atualização escolhida
-                                    leitor.nextLine();                          // Limpa o Buffer
-                                    terminal.limpar(500);                // Limpa o terminal
+                                    auxilios.limparTerminal(500);          // Limpa o terminal
                                     if (AtualiOpcao == 4) {
                                         MenuAdminAtualizacao = false;
                                         continue;
@@ -87,15 +87,15 @@ public class Main {
                                     System.out.printf("--------------------\n1: Voltar\n--> ");
                                 } else{
                                     System.out.println("Não há Pratos cadastrados.");
-                                    terminal.limpar(2000);
+                                    auxilios.limparTerminal(2000);
                                     continue;
                                 }
                                 int voltar = leitor.nextInt();
-                                terminal.limpar(500);
+                                auxilios.limparTerminal(500);
                                 if (voltar == 1) {
                                     System.out.printf("Voltando...");
-                                    terminal.limpar(1000);
-                                    continue;                                               // Volta para o Menu
+                                    auxilios.limparTerminal(1000);
+                                    continue;                                             // Volta para o Menu
                                 }else{
                                     System.out.println("opção inválida");
                                 }
@@ -106,36 +106,43 @@ public class Main {
                                 if (admin.VerificarPrato(nomePrato) == true) {      // Verifica se o Prato Existe
                                 } else {
                                     System.out.println("Prato não cadastrado ou não existe.");
-                                    terminal.limpar(2000);
+                                    auxilios.limparTerminal(2000);
                                     continue;
                                 }
 
                                 admin.DeletarPratos(nomePrato);                  // Deleta o Prato
-                                terminal.limpar(2000);                     // Limpa o terminal
+                                auxilios.limparTerminal(2000);             // Limpa o terminal
                                 continue;
                             case 5: // Administrar Garçons
-                                admin.MenuAdminGarcom();                         // Exibe menu de Administrar Garçons
-                                int opcaoAdminGarcom = leitor.nextInt();         // Recebe a opção escolhida
-                                leitor.nextLine();                               // Limpa o Buffer
-                                if (opcaoAdminGarcom == 3) {
-                                    terminal.limpar(500);
-                                    System.out.println("Voltando...");
-                                    terminal.limpar(1000);
-                                    continue;
-                                } else {
-                                    terminal.limpar(500);
-                                    admin.AdministrarGarcons(opcaoAdminGarcom);      // Opção é decidida no método da classe Admin
-                                    continue;
+                                boolean menuAdminGarcons = true;
+                                while (menuAdminGarcons) {
+                                    admin.MenuAdminGarcom();                         // Exibe menu de Administrar Garçons
+                                    int opcaoAdminGarcom = leitor.nextInt();         // Recebe a opção escolhida
+                                    leitor.nextLine();                               // Limpa o Buffer
+                                    if (opcaoAdminGarcom == 4) {
+                                        menuAdminGarcons = false;
+                                        auxilios.limparTerminal(500);
+                                        System.out.println("Voltando...");
+                                        auxilios.limparTerminal(500);
+                                        continue;
+                                    } else {
+                                        auxilios.limparTerminal(500);
+                                        admin.AdministrarGarcons(opcaoAdminGarcom);  // Opção é decidida no método da classe Admin
+                                        if (voltarGarcons) {                         // Voltar para o menu Administrar Garçons
+                                            continue;
+                                        }
+                                    }
                                 }
+                                continue;
                             case 6: // Deslogar Admin
                                 System.out.println("Deslogando...");
                                 MenuAdmin = false;                               // False para sair do Menu do Admin
                                 logout = true;                                   // True para voltar ao Menu Login
-                                terminal.limpar(1000);
+                                auxilios.limparTerminal(1000);
                                 continue;
                             default:
                                 System.out.println("Opção Inválida");
-                                terminal.limpar(1000);
+                                auxilios.limparTerminal(1000);
                                 continue;
                         }
                     }
@@ -144,7 +151,7 @@ public class Main {
                         continue;
                     }else{
                         System.out.println("Saindo...");
-                        terminal.limpar(500);
+                        auxilios.limparTerminal(500);
                         inicio = false;
                         break;
                     }
