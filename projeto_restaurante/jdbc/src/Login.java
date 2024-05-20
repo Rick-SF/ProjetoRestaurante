@@ -11,6 +11,7 @@ public class Login {
         System.out.printf("--> ");
     }
 
+    // Método para criar um Login de Garçom
     public void CriarGarcom (String nomeGarcom, int idadeGarcom, String usuarioGarcom, String senhaGarcom){
         String sqlGarcom = "INSERT INTO garcom (nome, idade) VALUES (?, ?)";
         String sqlLogin = "INSERT INTO login (id_garcom, usuario, senha) VALUES (?, ?, ?)";
