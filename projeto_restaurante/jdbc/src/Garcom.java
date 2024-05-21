@@ -4,7 +4,7 @@ public class Garcom {
     private String usuarioGarcom;
     private String senhaGarcom;
 
-    // Construtor
+    // Classe criada para criar um Garçom
     public Garcom(String nome, int idade, String usuarioGarcom, String senhaGarcom) {
         this.nome = nome;
         this.idade = idade;

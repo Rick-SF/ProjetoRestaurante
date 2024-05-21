@@ -13,35 +13,39 @@ public class Login {
 
     // Método para criar um Login de Garçom
     public void CriarGarcom (String nomeGarcom, int idadeGarcom, String usuarioGarcom, String senhaGarcom){
+        // É recebido os parâmetros e criado as QUERIES para criação do Garçom no banco com os dados do Parâmetro
         String sqlGarcom = "INSERT INTO garcom (nome, idade) VALUES (?, ?)";
         String sqlLogin = "INSERT INTO login (id_garcom, usuario, senha) VALUES (?, ?, ?)";
 
+        // Faz a conexão e prepara as QUERIES nas variáveis "stmt"...
         try (Connection conexao = conectiondb.conectar();
         PreparedStatement stmt1 = conexao.prepareStatement(sqlGarcom, Statement.RETURN_GENERATED_KEYS);
         PreparedStatement stmt2 = conexao.prepareStatement(sqlLogin)){
 
-            // Inserindo informações do Garçom através da variável "stmt1" armazenando a função
+            // Inserindo informações do Garçom na variável sql "stmt1"
             stmt1.setString(1, nomeGarcom);
             stmt1.setInt(2, idadeGarcom);
             int LinhasAfetadas1 = stmt1.executeUpdate();
 
-            // Obter ID do Garçom
-            int idGarcomInserido;
+            // Obtem o ID do Garçom criado na tabela garcom
+            int idGarcomCriado;
             try(ResultSet generetedKeys = stmt1.getGeneratedKeys()){
                 if (generetedKeys.next()) {
-                    idGarcomInserido = generetedKeys.getInt(1);
+                    idGarcomCriado = generetedKeys.getInt(1);
                 } else {
                     throw new SQLException("Falha ao obter o ID do Garçom inserido.");
                 }
             }
 
-            // Inserindo Dados na tabela Login
-            stmt2.setInt(1, idGarcomInserido);
+            // Inserindo na sql "stmt2" as outras informações de Login do Garçom na tabela login, Inclusive o ID do garçom como chave estrangeira
+            stmt2.setInt(1, idGarcomCriado);
             stmt2.setString(2, usuarioGarcom);
             stmt2.setString(3, senhaGarcom);
 
+            // Armazena as Linhas afetadas no banco
             int LinhasAfetadas2 = stmt2.executeUpdate();
 
+            // Mostra as Linhas afetadas
             System.out.println("Linhas Afetadas Tabela Garçom: "+ LinhasAfetadas1);
             System.out.println("Linhas Afetadas Tabela Login: "+ LinhasAfetadas2);
 
@@ -89,6 +93,7 @@ public class Login {
 
             ResultSet resultSet = stmt.executeQuery();
 
+            // Retorna true para o Login se encontrado o usuario e senha do admin
             if (resultSet.next()) {
                 LoginFeito = true;
             }

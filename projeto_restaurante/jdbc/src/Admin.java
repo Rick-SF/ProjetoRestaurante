@@ -137,7 +137,7 @@ public class Admin {
                 }
 
                 System.out.printf("Disponivel('1') ou Indisponivel('0'): ");
-                int disponibilidade = leitor.nextInt();                     // armazena opção de disponibilidade
+                int disponibilidade = leitor.nextInt();                     // armazena opção de disponibilidade escolhida
                 leitor.nextLine();                                          // Limpa o Buffer
 
                 sql = "UPDATE prato SET disponivel = ? WHERE nome = ?";             // Query para Atualizar disponibilidade
@@ -145,7 +145,8 @@ public class Admin {
                 if (disponibilidade == 1) {
                     try (Connection conexao = conectiondb.conectar();
                     PreparedStatement stmt = conexao.prepareStatement(sql)){
-    
+                        
+                    // Muda na tabela prato a disponibilidade do prato caso "Disponível" escolhido
                     stmt.setString(1, "sim");
                     stmt.setString(2, nomePrato);
     
@@ -160,7 +161,8 @@ public class Admin {
                 } else if(disponibilidade == 0) {
                     try (Connection conexao = conectiondb.conectar();
                     PreparedStatement stmt = conexao.prepareStatement(sql)){
-    
+                    
+                    // Muda na tabela prato a disponibilidade do prato caso "Indisponível" escolhido
                     stmt.setString(1, "nao");
                     stmt.setString(2, nomePrato);
     
@@ -203,19 +205,20 @@ public class Admin {
             }
 
             if (count == 0) {       // Testa se foi encontrado Pratos cadastrados
-                return false;
+                return false;       // Retorna False, se não encontrado Pratos
             }
             
         }catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
+        return true;                // Retorna True, para se encontrado Pratos
     }
 
     // Método para deletar pratos existentes
     public void DeletarPratos(String nomePrato){
         String sql = "DELETE FROM prato WHERE nome = ?";
 
+        // Estabelecendo Conexão e preparando os parâmetros das QUERIES
         try (Connection conexao = conectiondb.conectar();
             PreparedStatement stmt = conexao.prepareStatement(sql)){
 
@@ -233,14 +236,15 @@ public class Admin {
     public void AdministrarGarcons(int opcaoAdminGarcom){
         switch (opcaoAdminGarcom) {
             case 1: // Cria novo Garçom
-                garcom = new Garcom(null, 0, null, null);
-                garcom.setNome(auxilios.StringNaoVazia("Nome do Garçom: "));
-                System.out.printf("Idade do Garçom: ");
+                garcom = new Garcom(null, 0, null, null);       // Criando novo garçom
+                garcom.setNome(auxilios.StringNaoVazia("Nome do Garçom: "));              // Define nome do Garçom
+                System.out.printf("Idade do Garçom: ");                                    // Define a idade do garçom
                 garcom.setIdade(leitor.nextInt());
-                leitor.nextLine();                                                                  // Limpa o buffer
-                garcom.setUsuarioGarcom(auxilios.StringNaoVazia("Usuario do Garçom: "));
-                garcom.setSenhaGarcom(auxilios.StringNaoVazia("Senha do Garçom: "));
+                leitor.nextLine();                                                               // Limpa o buffer
+                garcom.setUsuarioGarcom(auxilios.StringNaoVazia("Usuario do Garçom: ")); // Define o usuário de Login
+                garcom.setSenhaGarcom(auxilios.StringNaoVazia("Senha do Garçom: ")); // Define a senha de Login
                 auxilios.limparTerminal(500);
+                // Manda os dados do novo garçom como parâmetro para o método de Criar Garçom na classe Login
                 login.CriarGarcom(garcom.getNome(), garcom.getIdade(), garcom.getUsuarioGarcom(), garcom.getSenhaGarcom());
                 auxilios.limparTerminal(3000);
                 break;
@@ -290,7 +294,7 @@ public class Admin {
             case 3: // Garçons Cadastrados
                 String sql = "SELECT nome, idade FROM garcom";
                 
-                // Estabelecendo Conexão e preparando os parâmetros das QUERIES
+                // Estabelecendo Conexão e preparando os parâmetros da QUERIE sql
                 try (Connection conexao = conectiondb.conectar();
                 PreparedStatement stmt = conexao.prepareStatement(sql)){
 
@@ -317,7 +321,7 @@ public class Admin {
                 System.out.printf("--> ");
                 int voltar = leitor.nextInt();
                 if (voltar == 1) {
-                    Main.voltarGarcons = true;                                 // Volta para o Menu
+                    Main.voltarGarcons = true;                             // Volta para o Menu
                     auxilios.limparTerminal(300);
                     System.out.printf("Voltando...");
                     auxilios.limparTerminal(500);

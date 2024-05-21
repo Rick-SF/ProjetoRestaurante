@@ -10,14 +10,14 @@ public class Main {
         boolean inicio = true;                                                      // Inicio do Loop
         
         while (inicio) {
-            boolean MenuAdmin = false, MenuAdminAtualizacao = false, logout = false;     // Variáveis de Loops
+            boolean MenuAdmin = false, MenuAdminAtualizacao = false, logoutAdmin = false;     // Variáveis de Loops
             login.LoginOpcoes();                                                         // Exibe as Opções de Login
             int opcao = leitor.nextInt();                                                // Recebe a opção escolhida
             leitor.nextLine();                                                           // Limpa o Buffer
             auxilios.limparTerminal(500);                                                  // Limpa o terminal
             
             switch (opcao) {                                
-                case 1:// Caso opção "Garçom" escolhida
+                case 1:// (Menu Login) Caso opção "Garçom" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário insere o Usuário de Garçom
                     String usuarioGarcom = leitor.nextLine();      // Armazena a entrada Usuário
 
@@ -32,7 +32,7 @@ public class Main {
                         auxilios.limparTerminal(1000);
                         continue;                                       // Volta para a tela de Login        
                     }
-                case 2:// Caso opção "Admin" escolhida
+                case 2:// (Menu Login) Caso opção "Admin" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário Insere o Usuário de Admin
                     String usuarioAdmin = leitor.nextLine();       // Armazena a entrada Usuário
 
@@ -57,7 +57,7 @@ public class Main {
                         leitor.nextLine();                           // Limpa o Buffer
 
                         switch (AdminOpcao) {
-                            case 1: // Cadastrar Pratos
+                            case 1: // (Menu Admin) Cadastrar Pratos
                                 System.out.printf("Nome do Prato a ser Cadastrado: "); // Entrada para Registrar novo Prato
                                 String nomePrato = leitor.nextLine();                      // Armazena novo Prato
                                 System.out.printf("Valor do Prato: ");             // Entrada para Registrar Valor do Prato
@@ -67,43 +67,43 @@ public class Main {
                                 admin.CadastrarPratos(nomePrato, valorPrato);        // Método para Adicionar os novos pratos
                                 auxilios.limparTerminal(3000);
                                 continue;
-                            case 2: // Atualizações de Pratos
-                                MenuAdminAtualizacao = true;                        // Exibi Menu de Atualizações
+                            case 2: // (Menu Admin) Atualizações de Pratos
+                                MenuAdminAtualizacao = true;                    // Boolean para Loop no menu Atualizar Pratos 
                                 while (MenuAdminAtualizacao) {
-                                    // Menu do Admin para Atualizações no Banco
+                                    // Menu do Admin localizado na classe admin para Atualizações de prato
                                     admin.MenuAdminAtualizar();
                                     int AtualiOpcao = leitor.nextInt();          // Armazena a opção de atualização escolhida
                                     auxilios.limparTerminal(500);          // Limpa o terminal
-                                    if (AtualiOpcao == 4) {
-                                        MenuAdminAtualizacao = false;
+                                    if (AtualiOpcao == 4) {                      // Opção de voltar escolhida
+                                        MenuAdminAtualizacao = false;            // False no Menu para sair do Loop
                                         continue;
-                                    }else{
+                                    }else{                                      // Else para as outras opções de atualização
                                         admin.AtualizarPratos(AtualiOpcao);     // Método para atualizar Pratos
                                     }
                                 }
                                 continue;
-                            case 3: // Mostrar Pratos Cadastrados
-                                if (admin.PratosCadastrados()){                         
+                            case 3: // (Menu Admin) Mostrar Pratos Cadastrados
+                                if (admin.PratosCadastrados()){                   // Se der true no método, mostra
                                     System.out.printf("--------------------\n1: Voltar\n--> ");
                                 } else{
-                                    System.out.println("Não há Pratos cadastrados.");
+                                    System.out.println("Não há Pratos cadastrados.");  // Se der false, informa
                                     auxilios.limparTerminal(2000);
                                     continue;
                                 }
-                                int voltar = leitor.nextInt();
+                                int voltar = leitor.nextInt();                      // Opção voltar
                                 auxilios.limparTerminal(500);
                                 if (voltar == 1) {
                                     System.out.printf("Voltando...");
                                     auxilios.limparTerminal(1000);
-                                    continue;                                             // Volta para o Menu
+                                    continue;                                      // Volta para o Menu
                                 }else{
                                     System.out.println("opção inválida");
                                 }
-                            case 4: // Deletar Pratos Cadastrados
+                            case 4: // (Menu Admin) Deletar Pratos Cadastrados
                                 System.out.printf("Nome do Prato a ser Deletado: ");       
                                 nomePrato = leitor.nextLine();                   // Armazena prato escolhido
                                 
-                                if (admin.VerificarPrato(nomePrato) == true) {      // Verifica se o Prato Existe
+                                if (admin.VerificarPrato(nomePrato)) {   // Verifica se o Prato Existe, se sim, continua
                                 } else {
                                     System.out.println("Prato não cadastrado ou não existe.");
                                     auxilios.limparTerminal(2000);
@@ -113,13 +113,13 @@ public class Main {
                                 admin.DeletarPratos(nomePrato);                  // Deleta o Prato
                                 auxilios.limparTerminal(2000);             // Limpa o terminal
                                 continue;
-                            case 5: // Administrar Garçons
-                                boolean menuAdminGarcons = true;
-                                while (menuAdminGarcons) {
+                            case 5: // (Menu Admin) Administrar Garçons
+                                boolean menuAdminGarcons = true;                    
+                                while (menuAdminGarcons) {           // Loop menu de administrar garçons para sair e voltar
                                     admin.MenuAdminGarcom();                         // Exibe menu de Administrar Garçons
                                     int opcaoAdminGarcom = leitor.nextInt();         // Recebe a opção escolhida
                                     leitor.nextLine();                               // Limpa o Buffer
-                                    if (opcaoAdminGarcom == 4) {
+                                    if (opcaoAdminGarcom == 4) {           // Se escolhida opção voltar, menu fica false e sai
                                         menuAdminGarcons = false;
                                         auxilios.limparTerminal(500);
                                         System.out.println("Voltando...");
@@ -134,20 +134,20 @@ public class Main {
                                     }
                                 }
                                 continue;
-                            case 6: // Deslogar Admin
+                            case 6: // (Menu Admin) Deslogar Admin
                                 System.out.println("Deslogando...");
                                 MenuAdmin = false;                               // False para sair do Menu do Admin
-                                logout = true;                                   // True para voltar ao Menu Login
+                                logoutAdmin = true;                                   // True para voltar ao Menu Login
                                 auxilios.limparTerminal(1000);
                                 continue;
-                            default:
+                            default: // (Menu Admin) Se escolhida uma opção além das ofertadas no menu de admin
                                 System.out.println("Opção Inválida");
                                 auxilios.limparTerminal(1000);
                                 continue;
                         }
                     }
-                case 3: // Encerra Programa
-                    if (logout == true) {
+                case 3: // (Menu Login) Encerra Programa
+                    if (logoutAdmin == true) {                   //
                         continue;
                     }else{
                         System.out.println("Saindo...");
