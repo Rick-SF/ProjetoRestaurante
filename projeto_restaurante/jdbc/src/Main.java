@@ -6,15 +6,17 @@ public class Main {
         Scanner leitor = new Scanner(System.in);                                    // Cria Scanner
         Login login = new Login();                                                  // Instância da Classe Login
         Admin admin = new Admin();                                                  // Instância da Classe Admin
+        GarcomUsuario garcomUsuario = new GarcomUsuario();
         Auxilios auxilios = new Auxilios();                             // Instância da Classe Auxilios
         boolean inicio = true;                                                      // Inicio do Loop
         
         while (inicio) {
             boolean MenuAdmin = false, MenuAdminAtualizacao = false, logoutAdmin = false;     // Variáveis de Loops
+            boolean MenuGarcom = false;
             login.LoginOpcoes();                                                         // Exibe as Opções de Login
             int opcao = leitor.nextInt();                                                // Recebe a opção escolhida
             leitor.nextLine();                                                           // Limpa o Buffer
-            auxilios.limparTerminal(500);                                                  // Limpa o terminal
+            auxilios.limparTerminal(500);                                          // Limpa o terminal
             
             switch (opcao) {                                
                 case 1:// (Menu Login) Caso opção "Garçom" escolhida
@@ -23,14 +25,47 @@ public class Main {
 
                     System.out.printf("Senha: ");           // Usuário insere a Senha de Garçom
                     String senhaGarcom = leitor.nextLine();        // Armazena a entrada Senha
+                    auxilios.limparTerminal(500);
 
                     // Faz a Verificação de Usuário e senha pelo Método LoginGarcom
                     if (login.LoginGarcom(usuarioGarcom, senhaGarcom)) {     // True, o Login é confirmado
-                        System.out.println("Login de Garçom Feito!");        
+                        System.out.println("Login de Garçom Feito!");
+                        auxilios.limparTerminal(1000);
+                        MenuGarcom = true;
                     } else {                                                // False, o Login é impedido
                         System.out.println("Login Inválido.");
                         auxilios.limparTerminal(1000);
                         continue;                                       // Volta para a tela de Login        
+                    }
+                    // Menu principal do Garçom
+                    while (MenuGarcom) {
+                        garcomUsuario.MenuGarcom();
+                        int garcomOpcao = leitor.nextInt();
+                        auxilios.limparTerminal(500);
+                        leitor.nextLine();
+
+                        switch (garcomOpcao) {
+                            case 1:
+                                System.out.printf("Número da Mesa: ");
+                                int numMesa = leitor.nextInt();
+                                System.out.printf("Pessoas na mesa: ");
+                                int ocupacao = leitor.nextInt();
+                                auxilios.limparTerminal(500);
+                                if(garcomUsuario.Cardápio()){
+                                    System.out.printf("Número do Prato: ");
+                                    int pratoPedido = leitor.nextInt();
+                                    // metodo anotar pedido
+                                    garcomUsuario.AnotarPedido(numMesa, ocupacao, pratoPedido, usuarioGarcom);
+                                    System.out.println("Pedido Feito!");
+                                }else{
+                                    auxilios.limparTerminal(500);
+                                    System.out.println("Não há pratos cadastrados.");
+                                    auxilios.limparTerminal(2000);
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
                     }
                 case 2:// (Menu Login) Caso opção "Admin" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário Insere o Usuário de Admin
@@ -50,6 +85,7 @@ public class Main {
                         auxilios.limparTerminal(1000);
                         break;
                     }
+                    // Menu principal do Admin
                     while (MenuAdmin) {
                         admin.MenuAdmin();                              // Exibe o Menu Opções de Admin
                         int AdminOpcao = leitor.nextInt();             // Recebe a opção de admin escolhida
