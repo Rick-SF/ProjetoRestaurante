@@ -39,30 +39,51 @@ public class Main {
                     }
                     // Menu principal do Garçom
                     while (MenuGarcom) {
-                        garcomUsuario.MenuGarcom();
-                        int garcomOpcao = leitor.nextInt();
+                        garcomUsuario.MenuGarcom();                         // Mostra o Menu de Opções
+                        int garcomOpcao = leitor.nextInt();                 // Recebe a opção
                         auxilios.limparTerminal(500);
                         leitor.nextLine();
 
                         switch (garcomOpcao) {
-                            case 1:
+                            case 1: // Anotar Pedido
                                 System.out.printf("Número da Mesa: ");
-                                int numMesa = leitor.nextInt();
+                                int numMesa = leitor.nextInt();                 // Recebe o número da Mesa
+                                leitor.nextLine();                              // Limpar Buffer
+                                if(garcomUsuario.MesaExistente(numMesa)){       // Testa se a mesa já tinha algum pedido
+                                    if (garcomUsuario.Cardápio()) {             // Mostra o Cardápio
+                                        System.out.printf("--------------------\nPrato Escolhido: ");
+                                        String pratoPedido = leitor.nextLine();
+                                        // Anota esse outro pedido
+                                        garcomUsuario.AnotarPedidoNovamente(numMesa ,pratoPedido, usuarioGarcom);
+                                        System.out.println("Pedidos Anotados na Mesa "+ numMesa);
+                                    } else{ // se false no método, informa que não há pratos 
+                                        auxilios.limparTerminal(500);
+                                        System.out.println("Não há pratos cadastrados.");
+                                        auxilios.limparTerminal(2000);
+                                        break;
+                                    }
+                                    continue;
+                                }
+                                // Novo pedido
                                 System.out.printf("Pessoas na mesa: ");
                                 int ocupacao = leitor.nextInt();
+                                leitor.nextLine();
                                 auxilios.limparTerminal(500);
-                                if(garcomUsuario.Cardápio()){
-                                    System.out.printf("Número do Prato: ");
-                                    int pratoPedido = leitor.nextInt();
-                                    // metodo anotar pedido
-                                    garcomUsuario.AnotarPedido(numMesa, ocupacao, pratoPedido, usuarioGarcom);
-                                    System.out.println("Pedido Feito!");
-                                }else{
+                                if(garcomUsuario.Cardápio()){           // Se true, aparece o cardápio e opção de Anotar o prato
+                                    System.out.printf("--------------------\nPrato Escolhido: ");
+                                    String pratoPedido = leitor.nextLine();
+                                    // Anota o novo pedido
+                                    garcomUsuario.AnotarNovoPedido(numMesa, ocupacao, pratoPedido, usuarioGarcom);
+                                    auxilios.limparTerminal(500);
+                                    System.out.println("Pedido na mesa "+ numMesa+" Feito!");
+                                    auxilios.limparTerminal(2500);
+                                }else{ // se false no método, informa que não há pratos 
                                     auxilios.limparTerminal(500);
                                     System.out.println("Não há pratos cadastrados.");
                                     auxilios.limparTerminal(2000);
                                     break;
                                 }
+                                continue;
                             default:
                                 break;
                         }
