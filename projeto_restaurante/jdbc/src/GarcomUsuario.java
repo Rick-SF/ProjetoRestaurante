@@ -2,12 +2,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GarcomUsuario {
     public void MenuGarcom(){
         System.out.println("----------Opções de Garçom----------");
         System.out.println("1: Anotar Pedido");
         System.out.println("2: Cardápio");
+        System.out.println("3: Pedidos");
+        System.out.println("4: Cancelar Pedido");
+        System.out.println("5: Imprimir Comanda");
+        System.out.println("6: Deslogar");
         System.out.printf("--> ");
     }
 
@@ -112,7 +120,7 @@ public class GarcomUsuario {
     public void AnotarPedidoNovamente(int numMesa, String pratoPedido, String usuarioGarcom){
         String sqlIDprato = "SELECT id FROM prato WHERE nome = ?";
         String sqlIDgarcom = "SELECT id_garcom FROM login WHERE usuario = ?";
-        String sqlPedido = "INSERT INTO mesa (num_mesa, id_prato, id_garcom) VALUES (?, ?, ?)";
+        String sqlPedido = "INSERT INTO pedidos (num_mesa, id_prato, id_garcom) VALUES (?, ?, ?)";
 
         try (Connection conexao = conectiondb.conectar();
             PreparedStatement stmt1 = conexao.prepareStatement(sqlIDprato);
@@ -120,20 +128,20 @@ public class GarcomUsuario {
             PreparedStatement stmt3 = conexao.prepareStatement(sqlPedido)){
                             
             stmt1.setString(1, pratoPedido);
-            ResultSet rs2 = stmt1.executeQuery();
+            ResultSet rs1 = stmt1.executeQuery();
             int IDprato = -1;
-            if (rs2.next()) {
-                IDprato = rs2.getInt("id");
+            if (rs1.next()) {
+                IDprato = rs1.getInt("id");
             }
             if (IDprato == -1) {
                 throw new SQLException("Prato não Encontrado");
             }
 
             stmt2.setString(1, usuarioGarcom);
-            ResultSet rs = stmt2.executeQuery();
+            ResultSet rs2 = stmt2.executeQuery();
             int IDgarcom = -1;
-            if (rs.next()) {
-                IDgarcom = rs.getInt("id_garcom");
+            if (rs2.next()) {
+                IDgarcom = rs2.getInt("id_garcom");
             }
             if (IDgarcom == -1) {
                 throw new SQLException("Garçom não encontrado");
@@ -147,5 +155,74 @@ public class GarcomUsuario {
         } catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public void ConsultarPedidos(){        
+        String sql = "SELECT mesa.numero AS num_mesa, prato.nome AS nome_prato, garcom.nome AS nome_garcom " +
+                     "FROM pedidos " +
+                     "INNER JOIN mesa ON pedidos.num_mesa = mesa.numero " +
+                     "INNER JOIN prato ON pedidos.id_prato = prato.id " +
+                     "INNER JOIN garcom ON pedidos.id_garcom = garcom.id";
+
+        try (Connection conexao = conectiondb.conectar();
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()){
+
+            // Mapa para armazenar pedidos agrupados por mesa e garçom
+            Map<Integer, Map<String, List<String>>> mesaPedidosMap = new HashMap<>();
+
+            while (rs.next()) {
+                int numMesa = rs.getInt("num_mesa");
+                String nomePrato = rs.getString("nome_prato");
+                String nomeGarcom = rs.getString("nome_garcom");
+
+                // Agrupar pedidos por mesa e por garçom
+                mesaPedidosMap.putIfAbsent(numMesa, new HashMap<>());
+                Map<String, List<String>> garcomPratosMap = mesaPedidosMap.get(numMesa);
+                garcomPratosMap.putIfAbsent(nomeGarcom, new ArrayList<>());
+                garcomPratosMap.get(nomeGarcom).add(nomePrato);
+            }
+
+            // Iterar sobre o mapa para exibir os resultados agrupados
+            for (Map.Entry<Integer, Map<String, List<String>>> mesaEntry : mesaPedidosMap.entrySet()) {
+                int numMesa = mesaEntry.getKey();
+                System.out.println("-------------------\nMESA: " + numMesa);
+                for (Map.Entry<String, List<String>> garcomEntry : mesaEntry.getValue().entrySet()) {
+                    String nomeGarcom = garcomEntry.getKey();
+                    System.out.println("  GARÇOM: " + nomeGarcom);
+                    System.out.println("    PEDIDOS:");
+                    int i = 1;
+                    for (String nomePrato : garcomEntry.getValue()) {
+                        System.out.println("    "+i+"°: " + nomePrato);
+                        i++;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void CancelarPedido(int numMesa){
+        String sqlPedidos = "DELETE FROM pedidos WHERE num_mesa = ?";
+        String sqlMesa = "DELETE FROM mesa WHERE numero = ?";
+        
+        try (Connection conexao = conectiondb.conectar();
+            PreparedStatement stmt1 = conexao.prepareStatement(sqlPedidos);
+            PreparedStatement stmt2 = conexao.prepareStatement(sqlMesa)){
+            
+            stmt1.setInt(1, numMesa);
+            stmt1.executeUpdate();
+
+            stmt2.setInt(1, numMesa);
+            int mesaDeletada = stmt2.executeUpdate();
+
+            System.out.println("Pedidos deletados da mesa número: "+ mesaDeletada);
+        
+        } catch(SQLException e){
+            e.printStackTrace();
+        }    
+
     }
 }

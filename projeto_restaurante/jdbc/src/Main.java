@@ -7,12 +7,13 @@ public class Main {
         Login login = new Login();                                                  // Instância da Classe Login
         Admin admin = new Admin();                                                  // Instância da Classe Admin
         GarcomUsuario garcomUsuario = new GarcomUsuario();
-        Auxilios auxilios = new Auxilios();                             // Instância da Classe Auxilios
+        Auxilios auxilios = new Auxilios();                                         // Instância da Classe Auxilios
         boolean inicio = true;                                                      // Inicio do Loop
         
         while (inicio) {
             boolean MenuAdmin = false, MenuAdminAtualizacao = false, logoutAdmin = false;     // Variáveis de Loops
-            boolean MenuGarcom = false;
+            boolean MenuGarcom = false, logoutGarcom = false;
+            auxilios.limparTerminal(0);
             login.LoginOpcoes();                                                         // Exibe as Opções de Login
             int opcao = leitor.nextInt();                                                // Recebe a opção escolhida
             leitor.nextLine();                                                           // Limpa o Buffer
@@ -45,7 +46,7 @@ public class Main {
                         leitor.nextLine();
 
                         switch (garcomOpcao) {
-                            case 1: // Anotar Pedido
+                            case 1: // (Menu Garçom) Anotar Pedido
                                 System.out.printf("Número da Mesa: ");
                                 int numMesa = leitor.nextInt();                 // Recebe o número da Mesa
                                 leitor.nextLine();                              // Limpar Buffer
@@ -64,7 +65,7 @@ public class Main {
                                     }
                                     continue;
                                 }
-                                // Novo pedido
+                                // (Menu Garçom) Novo pedido
                                 System.out.printf("Pessoas na mesa: ");
                                 int ocupacao = leitor.nextInt();
                                 leitor.nextLine();
@@ -84,9 +85,57 @@ public class Main {
                                     break;
                                 }
                                 continue;
-                            default:
-                                break;
+                            case 2: // (Menu Garçom) Cardápio
+                                if (admin.PratosCadastrados()){                   // Se der true no método, mostra
+                                    System.out.printf("--------------------\n1: Voltar\n--> ");
+                                } else{
+                                    System.out.println("Não há Pratos cadastrados.");  // Se der false, informa
+                                    auxilios.limparTerminal(2000);
+                                    continue;
+                                }
+                                int voltar = leitor.nextInt();                      // Opção voltar
+                                auxilios.limparTerminal(500);
+                                if (voltar == 1) {
+                                    System.out.printf("Voltando...");
+                                    auxilios.limparTerminal(1000);
+                                    continue;                                      // Volta para o Menu
+                                }else{
+                                    System.out.println("opção inválida");
+                                }
+                            case 3: // (Menu Garçom) Pedidos
+                                garcomUsuario.ConsultarPedidos();
+                                System.out.printf("--------------------\n1: Voltar\n--> ");
+                                voltar = leitor.nextInt();                      // Opção voltar
+                                auxilios.limparTerminal(500);
+                                if (voltar == 1) {
+                                    System.out.printf("Voltando...");
+                                    auxilios.limparTerminal(1000);
+                                    continue;                                      // Volta para o Menu
+                                }else{
+                                    System.out.println("Voltando...");
+                                    auxilios.limparTerminal(1000);
+                                    continue;
+                                }
+                            case 4: // (Menu Garçom) Cancelar Pedido
+                                auxilios.limparTerminal(300);
+                                System.out.printf("Número da mesa onde será cancelado os pedidos: ");
+                                numMesa = leitor.nextInt();
+                                garcomUsuario.CancelarPedido(numMesa);
+                                auxilios.limparTerminal(3000);
+                                continue;
+                            case 5: // (Menu Garçom) Imprimir Comanda
+                                break;                                
+                            case 6: // (Menu Garçom) Deslogar
+                                System.out.println("Deslogando...");
+                                MenuGarcom = false;                               // False para sair do Menu do Admin
+                                logoutGarcom = true;                                   // True para voltar ao Menu Login
+                                auxilios.limparTerminal(1000);
+                                continue;
                         }
+                    }
+                    // Volta pra tela de login se der Logout no Garçom
+                    if (logoutGarcom == true) {
+                        break;
                     }
                 case 2:// (Menu Login) Caso opção "Admin" escolhida
                     System.out.printf("\nUsuário: ");       // Usuário Insere o Usuário de Admin
@@ -154,7 +203,9 @@ public class Main {
                                     auxilios.limparTerminal(1000);
                                     continue;                                      // Volta para o Menu
                                 }else{
-                                    System.out.println("opção inválida");
+                                    System.out.println("Voltando...");
+                                    auxilios.limparTerminal(1000);
+                                    continue;
                                 }
                             case 4: // (Menu Admin) Deletar Pratos Cadastrados
                                 System.out.printf("Nome do Prato a ser Deletado: ");       
@@ -204,7 +255,7 @@ public class Main {
                         }
                     }
                 case 3: // (Menu Login) Encerra Programa
-                    if (logoutAdmin == true) {                   //
+                    if (logoutAdmin == true) {
                         continue;
                     }else{
                         System.out.println("Saindo...");
