@@ -47,42 +47,99 @@ public class Main {
 
                         switch (garcomOpcao) {
                             case 1: // (Menu Garçom) Anotar Pedido
+                                boolean AnotarPedido = true;
                                 System.out.printf("Número da Mesa: ");
                                 int numMesa = leitor.nextInt();                 // Recebe o número da Mesa
                                 leitor.nextLine();                              // Limpar Buffer
-                                if(garcomUsuario.MesaExistente(numMesa)){       // Testa se a mesa já tinha algum pedido
-                                    if (garcomUsuario.Cardápio()) {             // Mostra o Cardápio
+                                while (AnotarPedido) {
+                                    if(garcomUsuario.MesaExistente(numMesa)){       // Testa se a mesa já tinha algum pedido
+                                        if (garcomUsuario.Cardápio()) {             // Mostra o Cardápio
+                                            System.out.printf("--------------------\nPrato Escolhido: ");
+                                            String pratoPedido = leitor.nextLine();
+                                            // Anota esse outro pedido
+                                            garcomUsuario.AnotarPedidoNovamente(numMesa ,pratoPedido, usuarioGarcom);
+                                            auxilios.limparTerminal(500);
+                                            System.out.println("Pedido na mesa "+ numMesa +" Feito!");
+                                            System.out.println("1: Anotar outro Pedido");
+                                            System.out.println("2: Imprimir Comanda");
+                                            System.out.println("3: Voltar");
+                                            System.out.print("--> ");
+                                            int Opcoes = leitor.nextInt();
+                                            leitor.nextLine();
+                                            if (Opcoes == 1) {
+                                                auxilios.limparTerminal(100);
+                                                continue;
+                                            }else if (Opcoes == 2) {
+                                                auxilios.limparTerminal(1000);
+                                                garcomUsuario.ImprimirComanda(numMesa);
+                                                System.out.println("1: Continuar");
+                                                System.out.printf("--> ");
+                                                leitor.nextInt();
+                                                AnotarPedido = false;
+                                                auxilios.limparTerminal(300);
+                                                System.out.println("Voltando...");
+                                                auxilios.limparTerminal(1000);
+                                                continue;
+                                            }else if (Opcoes == 3) {
+                                                auxilios.limparTerminal(100);
+                                                System.out.println("Voltando...");
+                                                auxilios.limparTerminal(500);
+                                                break;
+                                            }
+                                        } else{ // se false no método Cardápio, informa que não há pratos 
+                                            auxilios.limparTerminal(500);
+                                            System.out.println("Não há pratos cadastrados.");
+                                            auxilios.limparTerminal(2000);
+                                            break;
+                                        }
+                                        continue;
+                                    }
+                                    // Novo pedido
+                                    System.out.printf("Pessoas na mesa: ");
+                                    int ocupacao = leitor.nextInt();
+                                    leitor.nextLine();
+                                    auxilios.limparTerminal(500);
+                                    if(garcomUsuario.Cardápio()){           // Se true, mostra cardápio e opção de Anotar o prato
                                         System.out.printf("--------------------\nPrato Escolhido: ");
                                         String pratoPedido = leitor.nextLine();
-                                        // Anota esse outro pedido
-                                        garcomUsuario.AnotarPedidoNovamente(numMesa ,pratoPedido, usuarioGarcom);
-                                        System.out.println("Pedidos Anotados na Mesa "+ numMesa);
-                                    } else{ // se false no método, informa que não há pratos 
+                                        // Anota o novo pedido
+                                        garcomUsuario.AnotarNovoPedido(numMesa, ocupacao, pratoPedido, usuarioGarcom);
+                                        auxilios.limparTerminal(500);
+                                        System.out.println("Pedido na mesa "+ numMesa+" Feito!");
+                                        System.out.println("1: Anotar outro Pedido");
+                                        System.out.println("2: Imprimir Comanda");
+                                        System.out.println("3: Voltar");
+                                        System.out.printf("--> ");
+                                        int Opcoes = leitor.nextInt();
+                                        leitor.nextLine();
+                                        if (Opcoes == 1) {
+                                            auxilios.limparTerminal(100);
+                                            continue;
+                                        }else if (Opcoes == 2) {
+                                            auxilios.limparTerminal(500);
+                                            garcomUsuario.ImprimirComanda(numMesa);
+                                            System.out.println("1: Continuar");
+                                            System.out.printf("--> ");
+                                            leitor.nextInt();
+                                            AnotarPedido = false;
+                                            auxilios.limparTerminal(500);
+                                            System.out.println("Voltando...");
+                                            auxilios.limparTerminal(1000);
+                                            continue;
+                                        }else if (Opcoes == 3) {
+                                            auxilios.limparTerminal(100);
+                                            System.out.println("Voltando...");
+                                            auxilios.limparTerminal(500);
+                                            break;
+                                        }
+                                        auxilios.limparTerminal(2500);
+                                    }if (!garcomUsuario.Cardápio()) {
+                                        // se false no método, informa que não há pratos 
                                         auxilios.limparTerminal(500);
                                         System.out.println("Não há pratos cadastrados.");
                                         auxilios.limparTerminal(2000);
-                                        break;
+                                        break;    
                                     }
-                                    continue;
-                                }
-                                // (Menu Garçom) Novo pedido
-                                System.out.printf("Pessoas na mesa: ");
-                                int ocupacao = leitor.nextInt();
-                                leitor.nextLine();
-                                auxilios.limparTerminal(500);
-                                if(garcomUsuario.Cardápio()){           // Se true, aparece o cardápio e opção de Anotar o prato
-                                    System.out.printf("--------------------\nPrato Escolhido: ");
-                                    String pratoPedido = leitor.nextLine();
-                                    // Anota o novo pedido
-                                    garcomUsuario.AnotarNovoPedido(numMesa, ocupacao, pratoPedido, usuarioGarcom);
-                                    auxilios.limparTerminal(500);
-                                    System.out.println("Pedido na mesa "+ numMesa+" Feito!");
-                                    auxilios.limparTerminal(2500);
-                                }else{ // se false no método, informa que não há pratos 
-                                    auxilios.limparTerminal(500);
-                                    System.out.println("Não há pratos cadastrados.");
-                                    auxilios.limparTerminal(2000);
-                                    break;
                                 }
                                 continue;
                             case 2: // (Menu Garçom) Cardápio
@@ -121,11 +178,33 @@ public class Main {
                                 System.out.printf("Número da mesa onde será cancelado os pedidos: ");
                                 numMesa = leitor.nextInt();
                                 garcomUsuario.CancelarPedido(numMesa);
+                                System.out.println("Pedidos Deletados da mesa número: " + numMesa);
                                 auxilios.limparTerminal(3000);
                                 continue;
                             case 5: // (Menu Garçom) Imprimir Comanda
-                                break;                                
-                            case 6: // (Menu Garçom) Deslogar
+                                System.out.printf("Número da Mesa: ");
+                                numMesa = leitor.nextInt();
+                                auxilios.limparTerminal(500);
+                                garcomUsuario.ImprimirComanda(numMesa);
+                                System.out.println("1: Continuar");
+                                System.out.printf("--> ");
+                                leitor.nextInt();
+                                break;
+                            case 6: // (Menu Garçom) Pagar Conta
+                                System.out.printf("Mesa a pagar: ");
+                                int mesa = leitor.nextInt();
+                                auxilios.limparTerminal(500);
+                                if(garcomUsuario.pagarConta(mesa)){
+                                    // Pagamento Realizado com Sucesso
+                                }else{ // Falha no Pagamento
+                                    auxilios.limparTerminal(500);
+                                    System.out.println("Erro ao fazer Pagamento.");
+                                    auxilios.limparTerminal(3000);
+                                    break;            
+                                }
+                                auxilios.limparTerminal(500);
+                                continue;                             
+                            case 7: // (Menu Garçom) Deslogar
                                 System.out.println("Deslogando...");
                                 MenuGarcom = false;                               // False para sair do Menu do Admin
                                 logoutGarcom = true;                                   // True para voltar ao Menu Login
