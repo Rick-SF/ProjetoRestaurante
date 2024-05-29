@@ -304,8 +304,8 @@ public class Admin {
             
                     while (rs.next()) {
                         String nome = rs.getString("nome");
-                        double idade = rs.getDouble("idade");
-                        System.out.printf("--------------------\nNome do Garçom: %s\nIdade: %f\n", nome, idade);
+                        double idade = rs.getInt("idade");
+                        System.out.printf("--------------------\nNome do Garçom: %s\nIdade: %d\n", nome, idade);
                         count++;
                     }
                     
