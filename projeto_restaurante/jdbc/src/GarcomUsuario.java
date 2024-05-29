@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class GarcomUsuario {
     Auxilios auxilios = new Auxilios();
+    Scanner leitor = new Scanner(System.in);
 
     public void MenuGarcom(){
         System.out.println("----------Opções de Garçom----------");
@@ -324,7 +325,6 @@ public boolean pagarConta(int numMesa) {
             boolean PagarConta = true;
             // Perguntar método de pagamento
             while (PagarConta) {
-                Scanner leitor = new Scanner(System.in);
                 System.out.println("\nEscolha o método de pagamento: ");
                 System.out.println("1: Espécie");
                 System.out.println("2: Pix/Cartão");
@@ -337,7 +337,6 @@ public boolean pagarConta(int numMesa) {
                     if (valorDado > total) {
                         double troco = valorDado - total;
                         System.out.printf("Pagamento realizado com sucesso. Troco: R$%.2f%n", troco);
-                        leitor.close();
                         auxilios.limparTerminal(3000);
                         break;
                     }else if (valorDado < total) {
@@ -347,13 +346,11 @@ public boolean pagarConta(int numMesa) {
                         continue;
                     }else {
                         System.out.println("Pagamento realizado com sucesso. Não há troco.");
-                        leitor.close();
                         auxilios.limparTerminal(3000);
                         break;
                     }
                 }else if (metodoPagamento == 2) {
                     System.out.println("Pagamento realizado com sucesso.");
-                    leitor.close();
                     auxilios.limparTerminal(3000);
                     break;
                 }else {
