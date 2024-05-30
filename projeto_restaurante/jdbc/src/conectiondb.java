@@ -2,9 +2,9 @@ import java.sql.*;
 
 public class conectiondb {
     //Informações de conexão
-    private static final String url = "jdbc:mysql://127.0.0.1:3308/restaurante";
-    private static final String user = "root";
-    private static final String password = "root";
+    private static final String url = "jdbc:mysql://127.0.0.1:3308/pedidos";
+    private static final String user = "ricardo";
+    private static final String password = "Xptocmc5!";
     
     private static Connection conexao = null;
 
