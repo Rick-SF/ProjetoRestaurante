@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -276,17 +277,19 @@ public class GarcomUsuario {
         }
     }
 
-public boolean pagarConta(int numMesa) {
+    public boolean pagarConta(int numMesa) {
         String sqlPedidos = "SELECT id_prato FROM pedidos WHERE num_mesa = ?";
         String sqlPrato = "SELECT nome, valor FROM prato WHERE id = ?";
         String sqlDeletePedidos = "DELETE FROM pedidos WHERE num_mesa = ?";
         String sqlDeleteMesa = "DELETE FROM mesa WHERE numero = ?";
+        String sqlInsertComanda = "INSERT INTO comandas (num_mesa, prato, quantidade, valor_unitario, valor_total, metodo_pagamento, valor_pago, data_hora) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = conectiondb.conectar();
              PreparedStatement stmtPedidos = conexao.prepareStatement(sqlPedidos);
              PreparedStatement stmtPrato = conexao.prepareStatement(sqlPrato);
              PreparedStatement stmtDeletePedidos = conexao.prepareStatement(sqlDeletePedidos);
-             PreparedStatement stmtDeleteMesa = conexao.prepareStatement(sqlDeleteMesa)) {
+             PreparedStatement stmtDeleteMesa = conexao.prepareStatement(sqlDeleteMesa);
+             PreparedStatement stmtInsertComanda = conexao.prepareStatement(sqlInsertComanda)) {
 
             // Obter todos os id_prato para a mesa específica
             stmtPedidos.setInt(1, numMesa);
@@ -301,65 +304,98 @@ public boolean pagarConta(int numMesa) {
 
             // Obter detalhes dos pratos e calcular o total
             double total = 0.0;
-            System.out.println("Comanda para a Mesa: " + numMesa);
-            System.out.println("-------------------------------");
-            for (Map.Entry<Integer, Integer> entry : pratosContagem.entrySet()) {
-                int idPrato = entry.getKey();
-                int quantidade = entry.getValue();
+            Map<Integer, String> pratosDetalhes = new HashMap<>();
+            Map<Integer, Double> pratosValores = new HashMap<>();
 
-                // Obter detalhes do prato
-                stmtPrato.setInt(1, idPrato);
-                ResultSet rsPrato = stmtPrato.executeQuery();
-                if (rsPrato.next()) {
-                    String nomePrato = rsPrato.getString("nome");
-                    double valorPrato = rsPrato.getDouble("valor");
-                    double subtotal = quantidade * valorPrato;
-                    total += subtotal;
-                    System.out.printf("%-20s x%d  R$%.2f%n", nomePrato, quantidade, subtotal);
+            boolean pagar = true;
+            String metodoPagamento = "";
+            double valorPago = 0.0;
+            double troco = 0.0;
+            while (pagar) {
+                total = 0.0;
+                System.out.println("Comanda para a Mesa: " + numMesa);
+                System.out.println("-------------------------------");
+                for (Map.Entry<Integer, Integer> entry : pratosContagem.entrySet()) {
+                    int idPrato = entry.getKey();
+                    int quantidade = entry.getValue();
+
+                    // Obter detalhes do prato
+                    stmtPrato.setInt(1, idPrato);
+                    ResultSet rsPrato = stmtPrato.executeQuery();
+                    if (rsPrato.next()) {
+                        String nomePrato = rsPrato.getString("nome");
+                        double valorPrato = rsPrato.getDouble("valor");
+                        double subtotal = quantidade * valorPrato;
+                        total += subtotal;
+                        pratosDetalhes.put(idPrato, nomePrato);
+                        pratosValores.put(idPrato, valorPrato);
+                        System.out.printf("%-20s x%d  R$%.2f%n", nomePrato, quantidade, subtotal);
+                    }
                 }
-            }
 
-            System.out.println("-------------------------------");
-            System.out.printf("Total: R$%.2f%n", total);
+                System.out.println("-------------------------------");
+                System.out.printf("Total: R$%.2f%n", total);
 
-            boolean PagarConta = true;
-            // Perguntar método de pagamento
-            while (PagarConta) {
+                
+                // Perguntar método de pagamento
+            
                 System.out.println("\nEscolha o método de pagamento: ");
                 System.out.println("1: Espécie");
                 System.out.println("2: Pix/Cartão");
                 System.out.printf("--> ");
-                int metodoPagamento = leitor.nextInt();
-    
-                if (metodoPagamento == 1) {
+                int metodo = leitor.nextInt();
+
+                if (metodo == 1) {
+                    metodoPagamento = "especie";
                     System.out.println("Insira o valor dado: ");
-                    double valorDado = leitor.nextDouble();
-                    if (valorDado > total) {
-                        double troco = valorDado - total;
+                    valorPago = leitor.nextDouble();
+                    if (valorPago > total) {
+                        troco = valorPago - total;
                         System.out.printf("Pagamento realizado com sucesso. Troco: R$%.2f%n", troco);
                         auxilios.limparTerminal(3000);
                         break;
-                    }else if (valorDado < total) {
-                        double faltante = total - valorDado;
+                    } else if (valorPago < total) {
+                        double faltante = total - valorPago;
                         System.out.printf("Valor insuficiente. Falta: R$%.2f%n", faltante);
                         auxilios.limparTerminal(3000);
                         continue;
-                    }else {
+                    } else {
                         System.out.println("Pagamento realizado com sucesso. Não há troco.");
                         auxilios.limparTerminal(3000);
                         break;
                     }
-                }else if (metodoPagamento == 2) {
+                } else if (metodo == 2) {
+                    metodoPagamento = "pix/cartao";
+                    valorPago = total;
                     System.out.println("Pagamento realizado com sucesso.");
                     auxilios.limparTerminal(3000);
                     break;
-                }else {
+                } else {
                     System.out.println("Método de pagamento inválido.");
                     auxilios.limparTerminal(1000);
-                    continue;
-                }        
+                }
             }
-            
+
+            // Registrar comanda na tabela comandas
+            Timestamp dataHora = new Timestamp(System.currentTimeMillis());
+            for (Map.Entry<Integer, Integer> entry : pratosContagem.entrySet()) {
+                int idPrato = entry.getKey();
+                String prato = pratosDetalhes.get(idPrato);
+                int quantidade = entry.getValue();
+                double valorUnitario = pratosValores.get(idPrato);
+
+                stmtInsertComanda.setInt(1, numMesa);
+                stmtInsertComanda.setString(2, prato);
+                stmtInsertComanda.setInt(3, quantidade);
+                stmtInsertComanda.setDouble(4, valorUnitario);
+                stmtInsertComanda.setDouble(5, total);
+                stmtInsertComanda.setString(6, metodoPagamento);
+                stmtInsertComanda.setDouble(7, valorPago);
+                stmtInsertComanda.setTimestamp(9, dataHora);
+                stmtInsertComanda.addBatch();
+            }
+            stmtInsertComanda.executeBatch();
+
             // Apagar registros da tabela pedidos
             stmtDeletePedidos.setInt(1, numMesa);
             stmtDeletePedidos.executeUpdate();
