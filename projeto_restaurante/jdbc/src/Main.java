@@ -189,6 +189,9 @@ public class Main {
                                 System.out.println("1: Continuar");
                                 System.out.printf("--> ");
                                 leitor.nextInt();
+                                auxilios.limparTerminal(500);
+                                System.out.println("Voltando...");
+                                auxilios.limparTerminal(1000);
                                 break;
                             case 6: // (Menu Garçom) Pagar Conta
                                 System.out.printf("Mesa a pagar: ");
@@ -264,6 +267,7 @@ public class Main {
                                         continue;
                                     }else{                                      // Else para as outras opções de atualização
                                         admin.AtualizarPratos(AtualiOpcao);     // Método para atualizar Pratos
+                                        auxilios.limparTerminal(2000);
                                     }
                                 }
                                 continue;
@@ -305,7 +309,6 @@ public class Main {
                                 while (menuAdminGarcons) {           // Loop menu de administrar garçons para sair e voltar
                                     admin.MenuAdminGarcom();                         // Exibe menu de Administrar Garçons
                                     int opcaoAdminGarcom = leitor.nextInt();         // Recebe a opção escolhida
-                                    leitor.nextLine();                               // Limpa o Buffer
                                     if (opcaoAdminGarcom == 4) {           // Se escolhida opção voltar, menu fica false e sai
                                         menuAdminGarcons = false;
                                         auxilios.limparTerminal(500);

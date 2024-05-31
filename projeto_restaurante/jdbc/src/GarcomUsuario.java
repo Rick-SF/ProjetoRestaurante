@@ -391,7 +391,7 @@ public class GarcomUsuario {
                 stmtInsertComanda.setDouble(5, total);
                 stmtInsertComanda.setString(6, metodoPagamento);
                 stmtInsertComanda.setDouble(7, valorPago);
-                stmtInsertComanda.setTimestamp(9, dataHora);
+                stmtInsertComanda.setTimestamp(8, dataHora);
                 stmtInsertComanda.addBatch();
             }
             stmtInsertComanda.executeBatch();

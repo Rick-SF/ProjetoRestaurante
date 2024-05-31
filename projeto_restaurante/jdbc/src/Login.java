@@ -25,7 +25,7 @@ public class Login {
             // Inserindo informações do Garçom na variável sql "stmt1"
             stmt1.setString(1, nomeGarcom);
             stmt1.setInt(2, idadeGarcom);
-            int LinhasAfetadas1 = stmt1.executeUpdate();
+            stmt1.executeUpdate();
 
             // Obtem o ID do Garçom criado na tabela garcom
             int idGarcomCriado;
@@ -41,13 +41,7 @@ public class Login {
             stmt2.setInt(1, idGarcomCriado);
             stmt2.setString(2, usuarioGarcom);
             stmt2.setString(3, senhaGarcom);
-
-            // Armazena as Linhas afetadas no banco
-            int LinhasAfetadas2 = stmt2.executeUpdate();
-
-            // Mostra as Linhas afetadas
-            System.out.println("Linhas Afetadas Tabela Garçom: "+ LinhasAfetadas1);
-            System.out.println("Linhas Afetadas Tabela Login: "+ LinhasAfetadas2);
+            stmt2.executeUpdate();
 
             System.out.println("Cadastro Feito!");
 

@@ -50,10 +50,9 @@ public class Admin {
             stmt.setString(1, nomePrato);
             stmt.setDouble(2, valorPrato);
             stmt.setString(3, "sim");
+            stmt.executeUpdate();
 
-            int LinhasAfetadas = stmt.executeUpdate();
             System.out.printf("\nPrato '%s' pelo valor de R$%.2f cadastrado.\n",nomePrato, valorPrato);
-            System.out.println("Linhas Afetadas: "+ LinhasAfetadas);
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -85,10 +84,9 @@ public class Admin {
     
                     stmt.setString(1, novoNome);
                     stmt.setString(2, antigoNome);
-    
-                    int LinhasAfetadas = stmt.executeUpdate();
+                    stmt.executeUpdate();
+
                     System.out.printf("\nNome do Prato '%s' atualizado para '%s'.\n", antigoNome, novoNome);
-                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                     auxilios.limparTerminal(3000);
                 }catch(SQLException e){
                     e.printStackTrace();
@@ -96,7 +94,6 @@ public class Admin {
                 break;
             case 2: // Mudar Valor de um Prato
                 System.out.printf("Prato no qual deseja mudar o preço: ");
-                leitor.nextLine();
                 nomePrato = leitor.nextLine();
                 System.out.printf("Novo preço do prato: ");
                 double NovoPreco = leitor.nextDouble();
@@ -116,10 +113,9 @@ public class Admin {
     
                     stmt.setDouble(1, NovoPreco);
                     stmt.setString(2, nomePrato);
-    
-                    int LinhasAfetadas = stmt.executeUpdate();
+                    stmt.executeUpdate();
+
                     System.out.printf("Preço do Prato '%s' atualizado para R$%.2f.", nomePrato, NovoPreco);
-                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                 }catch(SQLException e){
                     e.printStackTrace();
                 }
@@ -149,10 +145,9 @@ public class Admin {
                     // Muda na tabela prato a disponibilidade do prato caso "Disponível" escolhido
                     stmt.setString(1, "sim");
                     stmt.setString(2, nomePrato);
-    
-                    int LinhasAfetadas = stmt.executeUpdate();
+                    stmt.executeUpdate();
+                    
                     System.out.println("Disponibilidade do Prato '"+ nomePrato +"' atualizado para Disponivel.");
-                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                     auxilios.limparTerminal(3000);
 
                     }catch(SQLException e){
@@ -165,10 +160,9 @@ public class Admin {
                     // Muda na tabela prato a disponibilidade do prato caso "Indisponível" escolhido
                     stmt.setString(1, "nao");
                     stmt.setString(2, nomePrato);
-    
-                    int LinhasAfetadas = stmt.executeUpdate();
+                    stmt.executeUpdate();
+
                     System.out.println("Disponibilidade do Prato '"+ nomePrato +"' atualizado para Indisponivel.");
-                    System.out.println("Linhas afetadas: "+ LinhasAfetadas);
                     auxilios.limparTerminal(3000);
 
                     }catch(SQLException e){
@@ -223,10 +217,9 @@ public class Admin {
             PreparedStatement stmt = conexao.prepareStatement(sql)){
 
             stmt.setString(1, nomePrato);
+            stmt.executeUpdate();
 
-            int LinhasAfetadas = stmt.executeUpdate();
             System.out.println("Prato "+ nomePrato +" Deletado.");
-            System.out.println("Linhas Afetadas: " + LinhasAfetadas);
             
         }catch (SQLException e) {
             e.printStackTrace();
@@ -305,7 +298,7 @@ public class Admin {
                     while (rs.next()) {
                         String nome = rs.getString("nome");
                         double idade = rs.getInt("idade");
-                        System.out.printf("--------------------\nNome do Garçom: %s\nIdade: %d\n", nome, idade);
+                        System.out.printf("--------------------\nNome do Garçom: %s\nIdade: %.0f\n", nome, idade);
                         count++;
                     }
                     
@@ -326,10 +319,13 @@ public class Admin {
                     System.out.printf("Voltando...");
                     auxilios.limparTerminal(500);
                     break;                                               
-                }else{
-                    System.out.println("opção inválida");
+                }else{                                                     // Volta para o Menu
+                    Main.voltarGarcons = true;                             
+                    auxilios.limparTerminal(300);
+                    System.out.printf("Voltando...");
+                    auxilios.limparTerminal(500);
+                    break;
                 }
-                break;
             default:
                 System.out.println("Opção inválida.");
                 auxilios.limparTerminal(500);
