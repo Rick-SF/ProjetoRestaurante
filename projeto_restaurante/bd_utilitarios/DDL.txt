@@ -1,0 +1,73 @@
+-- CRIAÇÃO BANCO DE DADOS
+CREATE DATABASE pedidos;
+
+-- TABELA ADMINISTRADOR
+CREATE TABLE `administrador`(
+	`nome` VARCHAR(45) NOT NULL,
+	`usuario` VARCHAR(45) NOT NULL DEFAULT 'admin',
+	`senha` VARCHAR(45) NOT NULL DEFAULT 'admin123',
+	UNIQUE INDEX `usuario_UNIQUE` (`usuario` ASC),
+	UNIQUE INDEX `senha_UNIQUE` (`senha` ASC),
+	PRIMARY KEY (`nome`));
+
+
+-- TABELA COMANDAS
+CREATE TABLE `comandas` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `num_mesa` INT NOT NULL,
+  `prato` VARCHAR(255) NOT NULL,
+  `quantidade` INT NOT NULL,
+  `valor_unitario` DOUBLE NOT NULL,
+  `valor_total` DOUBLE NOT NULL,
+  `metodo_pagamento` VARCHAR(45) NOT NULL,
+  `valor_pago` DOUBLE NOT NULL,
+  `data_hora` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));
+
+
+-- TABELA GARÇOM
+CREATE TABLE `garcom` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `idade` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+
+-- TABELA LOGIN
+CREATE TABLE `login` (
+  `id_garcom` INT NULL DEFAULT NULL,
+  `usuario` VARCHAR(45) NOT NULL,
+  `senha` VARCHAR(45) NOT NULL,
+  INDEX `fk_idgarcom` (`id_garcom` ASC),
+  UNIQUE INDEX `senha_UNIQUE` (`senha` ASC),
+  UNIQUE INDEX `usuario_UNIQUE` (`usuario` ASC),
+  CONSTRAINT `fk_idgarcom` FOREIGN KEY (`id_garcom`) REFERENCES `garcom` (`id`));
+
+
+-- TABELA LOGIN
+CREATE TABLE `mesa` (
+  `numero` INT NOT NULL AUTO_INCREMENT,
+  `ocupação` INT NOT NULL,
+  PRIMARY KEY (`numero`));
+
+-- TABELA PRATO
+CREATE TABLE `prato` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `valor` DOUBLE NOT NULL,
+  `disponivel` VARCHAR(30) NOT NULL DEFAULT 'sim',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `nome_UNIQUE` (`nome` ASC));
+
+
+-- TABELA PEDIDOS
+CREATE TABLE `pedidos` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `num_mesa` INT NOT NULL,
+  `id_prato` INT NOT NULL,
+  `id_garcom` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_idgarcompd` FOREIGN KEY (`id_garcom`) REFERENCES `pedidos`.`garcom` (`id`),
+  CONSTRAINT `fk_idprato` FOREIGN KEY (`id_prato`) REFERENCES `pedidos`.`prato` (`id`),
+  CONSTRAINT `fk_nummesa` FOREIGN KEY (`num_mesa`) REFERENCES `pedidos`.`mesa` (`numero`));
