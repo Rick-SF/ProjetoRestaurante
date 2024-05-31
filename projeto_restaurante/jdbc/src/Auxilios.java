@@ -24,7 +24,7 @@ public class Auxilios {
         }
     }
 
-    // Tentei fazer para impedir entradas vazias (exceto na idade pq é dificil pa karai)
+    // Tentei fazer para impedir entradas vazias (exceto na idade)
     public String StringNaoVazia(String mensagem) {
         String entrada = "";
         while (entrada == "") {
@@ -33,7 +33,7 @@ public class Auxilios {
             if (entrada == "") {
                 System.out.println("Por favor, insira os dados.");
                 limparTerminal(1000);
-                if (garcom.getNome() == null) {         // sabosta nao funfa n sei pq
+                if (garcom.getNome() == null) {         
                     System.out.printf("Nome do Garçom: %s\nIdade do Garçom: %d\n", garcom.getNome());
                     break;
                 }

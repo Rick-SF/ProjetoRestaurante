@@ -1,0 +1,79 @@
+---------------------------------------------------------------------------------------------
+|connectiondb.java|:
+Informações de Conexão:
+url: jdbc:mysql://127.0.0.1:3308/pedidos
+user: "nome_do_usuario"
+password: "senha"
+---------------------------------------------------------------------------------------------
+|Admin.java|:
+1 - |CadastrarPratos()|
+Cadastrar novo prato -> INSERT INTO prato (nome, valor, disponivel) VALUES (?, ?, ?)
+
+2 - |AtualizarPratos()|
+Mudar nome -> UPDATE prato SET nome = ? WHERE nome = ?
+Mudar valor -> UPDATE prato SET valor = ? WHERE nome = ?
+Mudar disponibilidade -> UPDATE prato SET disponivel = ? WHERE nome = ?
+
+3 - |PratosCadastrados()|
+Selecionar pratos -> SELECT nome, valor, disponivel FROM prato
+
+4 - |DeletarPratos()|
+Deletar pratos -> DELETE FROM prato WHERE nome = ?
+
+5 - |AdministrarGarçons()|
+Deletar um Garçom -> 
+. SELECT id FROM garcom WHERE nome = ?
+. DELETE FROM login WHERE id_garcom = ?
+. DELETE FROM garcom WHERE id = ?
+Ver garços cadastrados -> SELECT nome, idade FROM garcom
+
+6 - |VerificarPrato()|
+Verifica se o prato existe -> SELECT COUNT(*) FROM prato WHERE nome = ?
+---------------------------------------------------------------------------------------------
+|GarcomUsuario.java|:
+1 - |Cardapio()|
+Ver cardápio -> SELECT nome, valor, disponivel FROM prato
+
+2 - |AnotarNovoPedido()|
+Cadastrar nova mesa -> INSERT INTO mesa (numero, ocupação) VALUES (?, ?)
+Ver garçom -> SELECT id_garcom FROM login WHERE usuario = ?
+Ver prato -> SELECT id FROM prato WHERE nome = ?
+Anotar Pedido -> INSERT INTO pedidos (num_mesa, id_prato, id_garcom) VALUES (?, ?, ?)
+
+3 - |MesaExistente()|
+Verificar mesa existente -> SELECT COUNT(*) FROM mesa WHERE numero = ?
+
+4 - |AnotarPedidoNovamente()|
+Pegar id do prato -> SELECT id FROM prato WHERE nome = ?
+Pegar id do Garçom -> SELECT id_garcom FROM login WHERE usuario = ?
+Anotar novo pedido -> INSERT INTO pedidos (num_mesa, id_prato, id_garcom) VALUES (?, ?, ?)
+
+5 - |ConsultarPedidos()|
+INNERJOIN -> String sql = "SELECT mesa.numero AS num_mesa, prato.nome AS nome_prato, garcom.nome AS nome_garcom " + "FROM pedidos " + "INNER JOIN mesa ON pedidos.num_mesa = mesa.numero " + "INNER JOIN prato ON pedidos.id_prato = prato.id " + "INNER JOIN garcom ON pedidos.id_garcom = garcom.id";
+
+6 - |CancelarPedido()|
+Cancelar pedido -> DELETE FROM pedidos WHERE num_mesa = ?
+Cancelar mesa -> DELETE FROM mesa WHERE numero = ?
+
+7 - |ImprimirComanda()|
+Imprimir pedido -> SELECT id_prato FROM pedidos WHERE num_mesa = ?
+Imprimir prato -> SELECT nome, valor FROM prato WHERE id = ?
+
+8 - |pagarConta()|
+Ver pedidos -> SELECT id_prato FROM pedidos WHERE num_mesa = ?
+Ver pratos -> SELECT nome, valor FROM prato WHERE id = ?
+Paga e deleta pedido -> DELETE FROM pedidos WHERE num_mesa = ?
+Paga e deleta mesa -> DELETE FROM mesa WHERE numero = ?
+Inserir nas comandas -> INSERT INTO comandas (num_mesa, prato, quantidade, valor_unitario, valor_total, metodo_pagamento, valor_pago, data_hora) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+---------------------------------------------------------------------------------------------
+|Login.java|:
+1 - |CriarGarcom()|
+Inserir info do Garçom no Garçom -> INSERT INTO garcom (nome, idade) VALUES (?, ?)
+Inserir info do Garçom no Login -> INSERT INTO login (id_garcom, usuario, senha) VALUES (?, ?, ?)
+
+2 - |LoginGarcom()|
+Verificar login -> SELECT * FROM login WHERE usuario = ? AND senha = ?
+
+3 - |LoginAdmin()|
+Verificar login -> SELECT * FROM administrador WHERE usuario = ? AND senha = ?
+---------------------------------------------------------------------------------------------
