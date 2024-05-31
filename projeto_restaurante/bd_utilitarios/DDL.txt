@@ -70,9 +70,4 @@ CREATE TABLE `pedidos` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_idgarcompd` FOREIGN KEY (`id_garcom`) REFERENCES `pedidos`.`garcom` (`id`),
   CONSTRAINT `fk_idprato` FOREIGN KEY (`id_prato`) REFERENCES `pedidos`.`prato` (`id`),
-  CONSTRAINT `fk_nummesa` FOREIGN KEY (`num_mesa`) REFERENCES `pedidos`.`mesa` (`numero`))
-
-
-
-
-
+  CONSTRAINT `fk_nummesa` FOREIGN KEY (`num_mesa`) REFERENCES `pedidos`.`mesa` (`numero`));
